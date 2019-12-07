@@ -6,7 +6,7 @@ Each year I try to learn a new programming language or a new aspect of a program
 Solutions are presented in Java, built using Gradle.
 
 # Build Status
-[![Build Status](https://travis-ci.com/jacob-lucas/adventofcode-2018.svg?branch=master)](https://travis-ci.com/jacob-lucas/adventofcode-2018)
+[![Build Status](https://travis-ci.com/jacob-lucas/adventofcode-2019.svg?branch=master)](https://travis-ci.com/jacob-lucas/adventofcode-2019)
 
 # Solutions
 The solution for each day is in its own class under `/src/main/java/com/jacoblucas/adventofcode2019`. Each respective day has its own main method to run the solution for that day. 
