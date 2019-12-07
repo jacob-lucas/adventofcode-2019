@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id "com.gradle.build-scan" version "3.1"
 }
 
 buildScan {
@@ -17,5 +18,10 @@ repositories {
 }
 
 dependencies {
+    compile "org.immutables:value:${immutablesVersion}"
+    compile "io.vavr:vavr:0.9.3"
+
+    annotationProcessor "org.immutables:value:${immutablesVersion}"
+
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
