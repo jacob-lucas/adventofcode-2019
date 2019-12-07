@@ -2,6 +2,11 @@ plugins {
     id 'java'
 }
 
+buildScan {
+    termsOfServiceUrl = 'https://gradle.com/terms-of-service'
+    termsOfServiceAgree = 'yes'
+}
+
 group 'com.jacoblucas'
 version '1.0-SNAPSHOT'
 
