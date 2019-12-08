@@ -20,6 +20,7 @@ repositories {
 dependencies {
     compile "org.immutables:value:${immutablesVersion}"
     compile "io.vavr:vavr:${vavrVersion}"
+    compile "io.vavr:vavr-match:${vavrVersion}"
     compile "com.google.guava:guava:${guavaVersion}"
 
     annotationProcessor "org.immutables:value:${immutablesVersion}"

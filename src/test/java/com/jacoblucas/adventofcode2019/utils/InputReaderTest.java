@@ -13,13 +13,13 @@ public class InputReaderTest {
 
     @Test
     public void failureOnFileNotFound() {
-        final Try<Stream<String>> lines = InputReader.read(TEST_INPUT_DIR, "does_not_exist.txt");
+        final Try<Stream<String>> lines = InputReader.readFile(TEST_INPUT_DIR, "does_not_exist.txt");
         assertThat(lines.isFailure(), is(true));
     }
 
     @Test
     public void returnsPopulatedStreamOnReadableFile() {
-        final Try<Stream<String>> lines = InputReader.read(TEST_INPUT_DIR,"test-input.txt");
+        final Try<Stream<String>> lines = InputReader.readFile(TEST_INPUT_DIR,"test-input.txt");
         assertThat(lines.isSuccess(), is(true));
         assertThat(lines.get(), is(Stream.of("1","2","3")));
     }
