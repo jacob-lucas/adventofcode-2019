@@ -12,6 +12,15 @@ public abstract class Module {
         return (getMass() / 3) - 2;
     }
 
+    @Value.Derived
+    public int getTotalRequiredFuel() {
+        final int requiredFuel = getRequiredFuel();
+        if (requiredFuel <= 0) {
+            return 0;
+        }
+        return getRequiredFuel() + ImmutableModule.of(requiredFuel).getTotalRequiredFuel();
+    }
+
     @Value.Check
     void check() {
         if (getMass() < 0) {
