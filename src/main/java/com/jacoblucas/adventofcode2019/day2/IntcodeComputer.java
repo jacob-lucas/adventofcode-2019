@@ -56,10 +56,10 @@ public class IntcodeComputer {
             return BREAK;
         }
 
-        System.out.println(String.format("[pos=%d] Before: %s", instructionPointer, memory));
+//        System.out.println(String.format("[pos=%d] Before: %s", instructionPointer, memory));
         memory = instruction.execute(memory);
         instructionPointer += instruction.getIncrement();
-        System.out.println(String.format("[pos=%d] After: %s", instructionPointer, memory));
+//        System.out.println(String.format("[pos=%d] After: %s", instructionPointer, memory));
 
         return CONTINUE;
     }

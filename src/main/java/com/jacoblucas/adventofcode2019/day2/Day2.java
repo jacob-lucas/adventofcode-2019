@@ -13,9 +13,28 @@ public class Day2 {
                 .map(Integer::valueOf)
                 .toArray();
 
-        final IntcodeComputer computer = new IntcodeComputer(input);
+        IntcodeComputer computer = new IntcodeComputer(input);
         computer.update(HashMap.of(1, 12, 2, 2));
         computer.execute();
         System.out.println(computer.getOutput());
+
+        final int desiredOutput = 19690720;
+        boolean found = false;
+        for (int noun = 0; noun < 100 && !found; noun++) {
+            for (int verb = 0; verb < 100 && !found; verb++) {
+                computer = new IntcodeComputer(input);
+                computer.update(HashMap.of(1, noun, 2, verb));
+                computer.execute();
+                final int output = computer.getOutput();
+                if (output == desiredOutput) {
+                    System.out.println(String.format("noun[%d] verb[%d] = %d", noun, verb, output));
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            System.out.println("noun/verb combination not found");
+        }
     }
 }
