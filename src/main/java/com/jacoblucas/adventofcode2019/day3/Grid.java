@@ -1,5 +1,6 @@
 package com.jacoblucas.adventofcode2019.day3;
 
+import com.jacoblucas.adventofcode2019.utils.Calculator;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.HashSet;
@@ -39,7 +40,6 @@ public class Grid {
     public void trace(final String id, final Coordinate2D currentCoord, final List<String> paths) {
         if (!paths.isEmpty()) {
             final String next = paths.head();
-
             final char direction = next.charAt(0);
             int amount = Integer.parseInt(next.substring(1));
             final Coordinate2D destinationCoord;
@@ -99,5 +99,40 @@ public class Grid {
             entries = entries.append(sb.toString());
         }
         return entries;
+    }
+
+    public int steps(final List<String> paths, final Coordinate2D destination) {
+        return steps(paths, CENTRAL_PORT, destination, 0);
+    }
+
+    private int steps(final List<String> paths, final Coordinate2D current, final Coordinate2D destination, final int stepCount) {
+        if (!paths.isEmpty()) {
+            final String next = paths.head();
+            final char direction = next.charAt(0);
+            int amount = Integer.parseInt(next.substring(1));
+            final Coordinate2D updated;
+            final int axisChange;
+            if (direction == 'U' || direction == 'D') {
+                final int y = current.y();
+                axisChange = direction == 'U' ? y + amount : y - amount;
+                updated = ImmutableCoordinate2D.copyOf(current).withY(axisChange);
+                if (destination.x() == current.x() && Math.min(current.y(), axisChange) <= destination.y() && destination.y() <= Math.max(current.y(), axisChange)) { // dest y between current y and axisChange
+                    // cross destination in this move
+                    return stepCount + Calculator.manhattanDistance(current, destination);
+                }
+            } else {
+                final int x = current.x();
+                axisChange = direction == 'R' ? x + amount : x - amount;
+                updated = ImmutableCoordinate2D.copyOf(current).withX(axisChange);
+                if (destination.y() == current.y() && Math.min(current.x(), axisChange) <= destination.x() && destination.x() <= Math.max(current.x(), axisChange)) {
+                    // cross destination in this move
+                    return stepCount + Calculator.manhattanDistance(current, destination);
+                }
+            }
+
+            return steps(paths.tail(), updated, destination, stepCount + amount);
+        }
+
+        return stepCount;
     }
 }

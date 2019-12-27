@@ -146,5 +146,22 @@ public class GridTest {
         assertThat(i2.getIds(), containsInAnyOrder("a", "b"));
     }
 
+    @Test
+    public void testSteps() {
+        final ImmutableCoordinate2D i1 = ImmutableCoordinate2D.of(3, 3);
+        final ImmutableCoordinate2D i2 = ImmutableCoordinate2D.of(6, 5);
+        final Grid grid = new Grid();
+
+        final List<String> path1 = List.of("R8", "U5", "L5", "D3");
+        grid.trace("a", CENTRAL_PORT, path1);
+        assertThat(grid.steps(path1, i1), is(20));
+        assertThat(grid.steps(path1, i2), is(15));
+
+        final List<String> path2 = List.of("U7", "R6", "D4", "L4");
+        grid.trace("b", CENTRAL_PORT, path2);
+        assertThat(grid.steps(path2, i1), is(20));
+        assertThat(grid.steps(path2, i2), is(15));
+    }
+
 }
 
