@@ -1,4 +1,4 @@
-package com.jacoblucas.adventofcode2019.day2;
+package com.jacoblucas.adventofcode2019.utils.intcode;
 
 import io.vavr.collection.Array;
 import io.vavr.collection.List;

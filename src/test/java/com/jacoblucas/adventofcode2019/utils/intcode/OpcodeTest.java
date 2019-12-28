@@ -1,11 +1,11 @@
-package com.jacoblucas.adventofcode2019.day2;
+package com.jacoblucas.adventofcode2019.utils.intcode;
 
 import io.vavr.control.Option;
 import org.junit.Test;
 
-import static com.jacoblucas.adventofcode2019.day2.Opcode.ADD;
-import static com.jacoblucas.adventofcode2019.day2.Opcode.HALT;
-import static com.jacoblucas.adventofcode2019.day2.Opcode.MULTIPLY;
+import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.ADD;
+import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.HALT;
+import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.MULTIPLY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

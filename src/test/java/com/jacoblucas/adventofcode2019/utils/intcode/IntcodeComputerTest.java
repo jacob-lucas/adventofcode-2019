@@ -1,4 +1,4 @@
-package com.jacoblucas.adventofcode2019.day2;
+package com.jacoblucas.adventofcode2019.utils.intcode;
 
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
@@ -6,7 +6,7 @@ import io.vavr.control.Option;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.jacoblucas.adventofcode2019.day2.IntcodeComputer.HALT;
+import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer.HALT;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 

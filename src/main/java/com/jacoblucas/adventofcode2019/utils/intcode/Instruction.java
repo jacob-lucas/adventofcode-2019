@@ -1,11 +1,11 @@
-package com.jacoblucas.adventofcode2019.day2;
+package com.jacoblucas.adventofcode2019.utils.intcode;
 
 import com.google.common.base.Preconditions;
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import org.immutables.value.Value;
 
-import static com.jacoblucas.adventofcode2019.day2.Opcode.HALT;
+import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.HALT;
 
 @Value.Immutable
 public abstract class Instruction {

@@ -1,6 +1,7 @@
 package com.jacoblucas.adventofcode2019.day2;
 
 import com.jacoblucas.adventofcode2019.utils.InputReader;
+import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
 import io.vavr.collection.Array;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.Stream;
