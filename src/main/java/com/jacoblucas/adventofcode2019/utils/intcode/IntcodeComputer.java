@@ -10,6 +10,7 @@ import io.vavr.control.Try;
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
+import static io.vavr.Predicates.isIn;
 
 public class IntcodeComputer {
     private static final int CONTINUE = 0;
@@ -69,26 +70,71 @@ public class IntcodeComputer {
             return Option.none();
         }
 
-        return Opcode.of(memory.get(address))
-                .map(o -> Match(o).of(
-                        Case($(Opcode.HALT), HALT),
-                        Case($(), () -> {
-                            final Try<Integer> a = Try.of(() -> memory.get(address + 1));
-                            final Try<Integer> b = Try.of(() -> memory.get(address + 2));
-                            final Try<Integer> c = Try.of(() -> memory.get(address + 3));
+        final Option<Integer> instruction = valueAt(address);
+        if (instruction.isEmpty()) {
+            return Option.none();
+        }
 
-                            if (a.isFailure() || b.isFailure() || c.isFailure()) {
-                                System.out.println(String.format("Unable to access codes at positions [%d, %d, %d] (num codes = %d)", address + 1, address + 2, address + 3, memory.length()));
+        return getOpcode(instruction.get())
+                .map(o -> Match(o).of(
+                        Case($(isIn(Opcode.ADD, Opcode.MULTIPLY)), () -> {
+                            final List<Option<Parameter>> params = List.of(
+                                    getParameter(instruction.get(), address, 1),
+                                    getParameter(instruction.get(), address, 2),
+                                    getParameter(instruction.get(), address, 3));
+                            if (params.contains(Option.none())) {
                                 return HALT;
                             }
 
-                            final List<Integer> parameters = List.of(a.get(), b.get(), c.get());
                             return ImmutableInstruction.builder()
                                     .opcode(o)
-                                    .parameters(parameters)
+                                    .parameters(params.map(Option::get))
                                     .build();
-                        })
+                        }),
+                        Case($(), HALT)
                 ));
     }
 
+    Option<Opcode> getOpcode(final int instruction) {
+        return Opcode.of(instruction % 100);
+    }
+
+    Option<Parameter> getParameter(final int instruction, final int address, final int parameterNumber) {
+        if (!List.of(1,2,3).contains(parameterNumber)) {
+            System.out.println(String.format("Unsupported parameterNumber[%d]", parameterNumber));
+            return Option.none();
+        }
+
+        final int parameterAddress = address + parameterNumber;
+        final Option<Integer> parameterValue = valueAt(parameterAddress);
+        if (parameterValue.isEmpty()) {
+            return Option.none();
+        }
+
+        final int mode = Match(parameterNumber).of(
+                Case($(1), instruction / 100),
+                Case($(2), instruction / 1000),
+                Case($(3), instruction / 10000),
+                Case($(), -1)); // should never happen based on check above
+
+        final Option<ParameterMode> modeValue = ParameterMode.of(mode);
+        if (modeValue.isEmpty()) {
+            return Option.none();
+        }
+
+        return Option.of(ImmutableParameter.builder()
+                .value(parameterValue.get())
+                .mode(modeValue.get())
+                .build());
+    }
+
+    private Option<Integer> valueAt(final int address) {
+        final Try<Integer> value = Try.of(() -> memory.get(address));
+        if (value.isFailure()) {
+            System.out.println(String.format("Unable to access memory at address [%d] (capacity = %d)", address, memory.length()));
+            return Option.none();
+        }
+
+        return Option.of(value.get());
+    }
 }

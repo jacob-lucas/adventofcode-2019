@@ -20,11 +20,40 @@ public class IntcodeComputerTest {
     }
 
     @Test
+    public void getOpcodeReturnsCorrectly() {
+        assertThat(computer.getOpcode(1), is(Option.of(Opcode.ADD)));
+        assertThat(computer.getOpcode(2), is(Option.of(Opcode.MULTIPLY)));
+        assertThat(computer.getOpcode(99), is(Option.of(Opcode.HALT)));
+
+        assertThat(computer.getOpcode(11101), is(Option.of(Opcode.ADD)));
+        assertThat(computer.getOpcode(11102), is(Option.of(Opcode.MULTIPLY)));
+        assertThat(computer.getOpcode(10199), is(Option.of(Opcode.HALT)));
+    }
+
+    @Test
+    public void getParameterReturnsCorrectly() {
+        assertThat(computer.getParameter(1, 0, 1), is(Option.of(ImmutableParameter.of(9, ParameterMode.POSITION))));
+        assertThat(computer.getParameter(1, 0, 2), is(Option.of(ImmutableParameter.of(10, ParameterMode.POSITION))));
+        assertThat(computer.getParameter(1, 0, 3), is(Option.of(ImmutableParameter.of(3, ParameterMode.POSITION))));
+
+        assertThat(computer.getParameter(101, 0, 1), is(Option.of(ImmutableParameter.of(9, ParameterMode.IMMEDIATE))));
+        assertThat(computer.getParameter(1101, 0, 2), is(Option.of(ImmutableParameter.of(10, ParameterMode.IMMEDIATE))));
+        assertThat(computer.getParameter(11101, 0, 3), is(Option.of(ImmutableParameter.of(3, ParameterMode.IMMEDIATE))));
+
+        assertThat(computer.getParameter(101, 0, 1), is(Option.of(ImmutableParameter.of(9, ParameterMode.IMMEDIATE))));
+        assertThat(computer.getParameter(1001, 0, 2), is(Option.of(ImmutableParameter.of(10, ParameterMode.IMMEDIATE))));
+        assertThat(computer.getParameter(10001, 0, 3), is(Option.of(ImmutableParameter.of(3, ParameterMode.IMMEDIATE))));
+    }
+
+    @Test
     public void atReturnsAddInstruction() {
         final Option<Instruction> instruction = computer.at(0);
         assertThat(instruction.isDefined(), is(true));
         assertThat(instruction.get().getOpcode(), is(Opcode.ADD));
-        assertThat(instruction.get().getParameters(), is(List.of(9,10,3)));
+        assertThat(instruction.get().getParameters(), is(List.of(
+                ImmutableParameter.of(9, ParameterMode.POSITION),
+                ImmutableParameter.of(10, ParameterMode.POSITION),
+                ImmutableParameter.of(3, ParameterMode.POSITION))));
     }
 
     @Test
@@ -32,7 +61,10 @@ public class IntcodeComputerTest {
         final Option<Instruction> instruction = computer.at(4);
         assertThat(instruction.isDefined(), is(true));
         assertThat(instruction.get().getOpcode(), is(Opcode.MULTIPLY));
-        assertThat(instruction.get().getParameters(), is(List.of(3,11,0)));
+        assertThat(instruction.get().getParameters(), is(List.of(
+                ImmutableParameter.of(3, ParameterMode.POSITION),
+                ImmutableParameter.of(11, ParameterMode.POSITION),
+                ImmutableParameter.of(0, ParameterMode.POSITION))));
     }
 
     @Test
