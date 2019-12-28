@@ -18,13 +18,15 @@ public class PasswordGuesserTest {
     @Test
     public void testMeetsCriteria() {
         assertThat(passwordGuesser.meetsCriteria(122345), is(true));
-        assertThat(passwordGuesser.meetsCriteria(111111), is(true));
-        assertThat(passwordGuesser.meetsCriteria(111123), is(true));
-        assertThat(passwordGuesser.meetsCriteria(999999), is(true));
+        assertThat(passwordGuesser.meetsCriteria(112233), is(true));
+        assertThat(passwordGuesser.meetsCriteria(111122), is(true));
 
+        assertThat(passwordGuesser.meetsCriteria(111123), is(false));
+        assertThat(passwordGuesser.meetsCriteria(111111), is(false));
         assertThat(passwordGuesser.meetsCriteria(135679), is(false));
         assertThat(passwordGuesser.meetsCriteria(223450), is(false));
         assertThat(passwordGuesser.meetsCriteria(123789), is(false));
+        assertThat(passwordGuesser.meetsCriteria(123444), is(false));
     }
 
 }
