@@ -12,6 +12,7 @@ public class InstructionTest {
     @Test
     public void testAddWithPosition() {
         final Instruction add = ImmutableInstruction.builder()
+                .memoryAddress(0)
                 .opcode(Opcode.ADD)
                 .parameters(List.of(
                         ImmutableParameter.of(9, ParameterMode.POSITION),
@@ -25,6 +26,7 @@ public class InstructionTest {
     @Test
     public void testAddWithImmediate() {
         final Instruction add = ImmutableInstruction.builder()
+                .memoryAddress(0)
                 .opcode(Opcode.ADD)
                 .parameters(List.of(
                         ImmutableParameter.of(9, ParameterMode.IMMEDIATE),
@@ -38,6 +40,7 @@ public class InstructionTest {
     @Test
     public void testMultiplyWithPosition() {
         final Instruction multiply = ImmutableInstruction.builder()
+                .memoryAddress(4)
                 .opcode(Opcode.MULTIPLY)
                 .parameters(List.of(
                         ImmutableParameter.of(3, ParameterMode.POSITION),
@@ -51,6 +54,7 @@ public class InstructionTest {
     @Test
     public void testMultiplyWithImmediate() {
         final Instruction multiply = ImmutableInstruction.builder()
+                .memoryAddress(4)
                 .opcode(Opcode.MULTIPLY)
                 .parameters(List.of(
                         ImmutableParameter.of(3, ParameterMode.IMMEDIATE),
@@ -65,10 +69,39 @@ public class InstructionTest {
     public void testHalt() {
         final Array<Integer> memory = Array.of(1,9,10,3,2,3,11,0,99,30,40,50);
         final Instruction halt = ImmutableInstruction.builder()
+                .memoryAddress(8)
                 .opcode(Opcode.HALT)
                 .build();
 
         assertThat(halt.execute(memory), is(memory));
+    }
+
+    @Test
+    public void testAddWithNegative() {
+        final Instruction add = ImmutableInstruction.builder()
+                .memoryAddress(0)
+                .opcode(Opcode.ADD)
+                .parameters(List.of(
+                        ImmutableParameter.of(100, ParameterMode.IMMEDIATE),
+                        ImmutableParameter.of(-1, ParameterMode.IMMEDIATE),
+                        ImmutableParameter.of(4, ParameterMode.POSITION)))
+                .build();
+
+        assertThat(add.execute(Array.of(1,9,10,3,2,3,11,0,99,30,40,50)), is(Array.of(1,9,10,3,99,3,11,0,99,30,40,50)));
+    }
+
+    @Test
+    public void testMultiplyWithNegative() {
+        final Instruction add = ImmutableInstruction.builder()
+                .memoryAddress(4)
+                .opcode(Opcode.MULTIPLY)
+                .parameters(List.of(
+                        ImmutableParameter.of(100, ParameterMode.IMMEDIATE),
+                        ImmutableParameter.of(-1, ParameterMode.IMMEDIATE),
+                        ImmutableParameter.of(4, ParameterMode.POSITION)))
+                .build();
+
+        assertThat(add.execute(Array.of(1,9,10,3,2,3,11,0,99,30,40,50)), is(Array.of(1,9,10,3,-100,3,11,0,99,30,40,50)));
     }
 
 }

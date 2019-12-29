@@ -1,5 +1,6 @@
 package com.jacoblucas.adventofcode2019.utils.intcode;
 
+import com.jacoblucas.adventofcode2019.utils.InputReader;
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
@@ -16,16 +17,34 @@ public class IntcodeComputer {
     private static final int CONTINUE = 0;
     private static final int BREAK = 1;
 
-    static Instruction HALT = ImmutableInstruction.builder()
+    static Instruction PROGRAM_HALT = ImmutableInstruction.builder()
+            .memoryAddress(-1)
             .opcode(Opcode.HALT)
             .build();
 
     private Array<Integer> memory;
     private int instructionPointer;
+    private int input;
 
-    public IntcodeComputer(final Array<Integer> input) {
-        memory = input;
+    public IntcodeComputer(final String filename, final int input) {
+        memory = InputReader.read(filename)
+                .map(str -> str.split(","))
+                .flatMap(Stream::of)
+                .map(Integer::valueOf)
+                .toArray();
+
         instructionPointer = 0;
+        this.input = input;
+    }
+
+    public IntcodeComputer(final Array<Integer> program) {
+        this(program, 0);
+    }
+
+    public IntcodeComputer(final Array<Integer> program, final int input) {
+        memory = program;
+        instructionPointer = 0;
+        this.input = input;
     }
 
     public Array<Integer> getMemory() {
@@ -53,12 +72,18 @@ public class IntcodeComputer {
     }
 
     private int execute(final Instruction instruction) {
-        if (instruction == HALT) {
+        if (instruction.getOpcode() == Opcode.HALT) {
             return BREAK;
         }
 
 //        System.out.println(String.format("[pos=%d] Before: %s", instructionPointer, memory));
-        memory = instruction.execute(memory);
+        final Opcode opcode = instruction.getOpcode();
+        if (List.of(Opcode.SAVE, Opcode.OUTPUT).contains(opcode)) {
+            memory = instruction.execute(memory, input);
+        } else {
+            memory = instruction.execute(memory);
+        }
+
         instructionPointer += instruction.getIncrement();
 //        System.out.println(String.format("[pos=%d] After: %s", instructionPointer, memory));
 
@@ -70,28 +95,45 @@ public class IntcodeComputer {
             return Option.none();
         }
 
-        final Option<Integer> instruction = valueAt(address);
-        if (instruction.isEmpty()) {
+        final Option<Integer> integerOption = valueAt(address);
+        if (integerOption.isEmpty()) {
             return Option.none();
         }
 
-        return getOpcode(instruction.get())
+        final Integer instruction = integerOption.get();
+        return getOpcode(instruction)
                 .map(o -> Match(o).of(
                         Case($(isIn(Opcode.ADD, Opcode.MULTIPLY)), () -> {
                             final List<Option<Parameter>> params = List.of(
-                                    getParameter(instruction.get(), address, 1),
-                                    getParameter(instruction.get(), address, 2),
-                                    getParameter(instruction.get(), address, 3));
+                                    getParameter(instruction, address, 1),
+                                    getParameter(instruction, address, 2),
+                                    getParameter(instruction, address, 3));
                             if (params.contains(Option.none())) {
-                                return HALT;
+                                return PROGRAM_HALT;
                             }
 
                             return ImmutableInstruction.builder()
+                                    .memoryAddress(address)
                                     .opcode(o)
                                     .parameters(params.map(Option::get))
                                     .build();
                         }),
-                        Case($(), HALT)
+                        Case($(isIn(Opcode.SAVE, Opcode.OUTPUT)), () -> {
+                            final Option<Parameter> param = getParameter(instruction, address, 1);
+                            if (param.isEmpty()) {
+                                return PROGRAM_HALT;
+                            }
+
+                            return ImmutableInstruction.builder()
+                                    .memoryAddress(address)
+                                    .opcode(o)
+                                    .parameters(List.of(param.get()))
+                                    .build();
+                        }),
+                        Case($(), ImmutableInstruction.builder()
+                                .memoryAddress(address)
+                                .opcode(Opcode.HALT)
+                                .build())
                 ));
     }
 
@@ -111,11 +153,7 @@ public class IntcodeComputer {
             return Option.none();
         }
 
-        final int mode = Match(parameterNumber).of(
-                Case($(1), instruction / 100),
-                Case($(2), instruction / 1000),
-                Case($(3), instruction / 10000),
-                Case($(), -1)); // should never happen based on check above
+        final int mode = getMode(instruction, parameterNumber);
 
         final Option<ParameterMode> modeValue = ParameterMode.of(mode);
         if (modeValue.isEmpty()) {
@@ -136,5 +174,14 @@ public class IntcodeComputer {
         }
 
         return Option.of(value.get());
+    }
+
+    private int getMode(final int instruction, final int parameterNumber) {
+        final char[] mode = String.format("%05d", instruction).toCharArray();
+        return Character.getNumericValue(Match(parameterNumber).of(
+                Case($(1), mode[2]),
+                Case($(2), mode[1]),
+//                Case($(3), mode[0]),
+                Case($(), '0')));
     }
 }
