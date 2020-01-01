@@ -13,11 +13,12 @@ public class Day5 {
                 .map(Integer::valueOf)
                 .toArray();
 
-        IntcodeComputer computer = new IntcodeComputer(input, 1);
+        IntcodeComputer computer = new IntcodeComputer();
+        computer.feed(input, 1);
         computer.execute();
         System.out.println(computer.getOutput());
 
-        computer = new IntcodeComputer(input, 5);
+        computer.feed(input, 5);
         computer.execute();
         System.out.println(computer.getOutput());
     }

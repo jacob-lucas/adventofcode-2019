@@ -2,7 +2,6 @@ package com.jacoblucas.adventofcode2019.utils.intcode;
 
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
-import io.vavr.collection.Map;
 import io.vavr.collection.Seq;
 import io.vavr.collection.Stream;
 import io.vavr.control.Option;
@@ -27,34 +26,23 @@ public class IntcodeComputer {
     private int input;
     private int output;
 
-    public IntcodeComputer(final Array<Integer> program) {
-        this(program, 0);
+    public void feed(final Array<Integer> program) {
+        feed(program, 0);
     }
 
-    public IntcodeComputer(final Array<Integer> program, final int input) {
-        memory = program;
-        instructionPointer = 0;
+    public void feed(Array<Integer> program, int input) {
+        this.instructionPointer = 0;
+        this.memory = program;
         this.input = input;
         this.output = Integer.MIN_VALUE;
     }
 
-    public Array<Integer> getMemory() {
-        return this.memory;
-    }
-
     public int getOutput() {
         if (output == Integer.MIN_VALUE) {
-            return getMemory().get(0);
+            return memory.get(0);
         } else {
             return output;
         }
-    }
-
-    public IntcodeComputer update(final Map<Integer, Integer> addressValueMap) {
-        if (Stream.range(0, memory.length()).containsAll(addressValueMap.keySet())) {
-            addressValueMap.forEach((k, v) -> memory = memory.update(k, v));
-        }
-        return this;
     }
 
     public IntcodeComputer execute() {
@@ -191,5 +179,9 @@ public class IntcodeComputer {
                 Case($(2), mode[1]),
 //                Case($(3), mode[0]),
                 Case($(), '0')));
+    }
+
+    Array<Integer> getMemory() {
+        return this.memory;
     }
 }
