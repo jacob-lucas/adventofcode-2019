@@ -6,7 +6,6 @@ import io.vavr.control.Option;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer.PROGRAM_HALT;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -170,7 +169,8 @@ public class IntcodeComputerTest {
 
     @Test
     public void incrementForHalt() {
-        assertThat(PROGRAM_HALT.getIncrement(), is(1));
+        final Option<Instruction> instruction = computer.at(8);
+        assertThat(instruction.get().getIncrement(), is(1));
     }
 
     @Test

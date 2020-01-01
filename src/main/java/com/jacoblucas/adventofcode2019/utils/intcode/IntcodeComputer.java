@@ -16,11 +16,6 @@ public class IntcodeComputer {
     private static final int CONTINUE = 0;
     private static final int BREAK = 1;
 
-    static Instruction PROGRAM_HALT = ImmutableInstruction.builder()
-            .memoryAddress(-1)
-            .opcode(Opcode.HALT)
-            .build();
-
     private Array<Integer> memory;
     private int instructionPointer;
     private int input;
@@ -106,10 +101,10 @@ public class IntcodeComputer {
 
         final Opcode opcode = opcodeOption.get();
 
-        return Option.of(getInstruction(address, instruction, opcode));
+        return getInstruction(address, instruction, opcode);
     }
 
-    private Instruction getInstruction(
+    private Option<Instruction> getInstruction(
             final int address,
             final int instruction,
             final Opcode opcode
@@ -123,14 +118,14 @@ public class IntcodeComputer {
         final Seq<Option<Parameter>> params = Stream.range(1, numExpectedParameters + 1)
                 .map(n -> getParameter(instruction, address, n));
         if (params.contains(Option.none())) {
-            return PROGRAM_HALT;
+            return Option.none();
         }
 
-        return ImmutableInstruction.builder()
+        return Option.of(ImmutableInstruction.builder()
                 .memoryAddress(address)
                 .opcode(opcode)
                 .parameters(params.map(Option::get).toList())
-                .build();
+                .build());
     }
 
     Option<Opcode> getOpcode(final int instruction) {
