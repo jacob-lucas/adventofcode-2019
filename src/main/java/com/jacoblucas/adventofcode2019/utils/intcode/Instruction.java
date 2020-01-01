@@ -69,15 +69,32 @@ public abstract class Instruction {
 
     public Array<Integer> execute(final Array<Integer> memory) {
         final Opcode opcode = getOpcode();
-        final List<Parameter> parameters = getParameters();
-        if (opcode == HALT || parameters.size() != 3) {
+        if (opcode == HALT || getParameters().size() != 3) {
             return memory;
         }
 
-        final int a = parameters.get(0).getMode() == POSITION ? memory.get(parameters.get(0).getValue()) : parameters.get(0).getValue();
-        final int b = parameters.get(1).getMode() == POSITION ? memory.get(parameters.get(1).getValue()) : parameters.get(1).getValue();
-        final int c = parameters.get(2).getValue();
+        final int a = getParameterValue(0, memory);
+        final int b = getParameterValue(1, memory);
+        final int c = getParameters().get(2).getValue();
 
         return memory.update(c, opcode.apply(a, b));
+    }
+
+    public int calculateInstructionPointer(final Array<Integer> memory) {
+        final Opcode opcode = getOpcode();
+        final List<Parameter> parameters = getParameters();
+        if (parameters.size() != 2) {
+            return 0;
+        }
+
+        final int a = getParameterValue(0, memory);
+        final int b = getParameterValue(1, memory);
+
+        return opcode.apply(a, b);
+    }
+
+    public int getParameterValue(int n, final Array<Integer> memory) {
+        final Parameter parameter = getParameters().get(n);
+        return parameter.getMode() == POSITION ? memory.get(parameter.getValue()) : parameter.getValue();
     }
 }

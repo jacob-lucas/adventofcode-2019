@@ -100,6 +100,52 @@ public class IntcodeComputerTest {
     }
 
     @Test
+    public void atReturnsJumpIfTrueInstruction() {
+        IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,3,1105,-1,9,1101,0,0,12,4,12,99,1));
+        Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getMemoryAddress(), is(2));
+        assertThat(instruction.get().getOpcode(), is(Opcode.JUMP_IF_TRUE));
+        assertThat(instruction.get().getParameters(), is(List.of(
+                ImmutableParameter.of(-1, ParameterMode.IMMEDIATE),
+                ImmutableParameter.of(9, ParameterMode.IMMEDIATE))));
+    }
+
+    @Test
+    public void atReturnsJumpIfFalseInstruction() {
+        IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,12,6,0,15,1,13,14,13,4,13,99,-1,0,1,9));
+        Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getMemoryAddress(), is(2));
+        assertThat(instruction.get().getOpcode(), is(Opcode.JUMP_IF_FALSE));
+        assertThat(instruction.get().getParameters(), is(List.of(
+                ImmutableParameter.of(0, ParameterMode.POSITION),
+                ImmutableParameter.of(15, ParameterMode.POSITION))));
+    }
+
+    @Test
+    public void atReturnsLessThanInstruction() {
+        final IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,9,7,9,10,9,4,9,99,-1,8));
+        final Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getMemoryAddress(), is(2));
+        assertThat(instruction.get().getOpcode(), is(Opcode.LESS_THAN));
+        assertThat(instruction.get().getParameters(), is(List.of(
+                ImmutableParameter.of(9, ParameterMode.POSITION),
+                ImmutableParameter.of(10, ParameterMode.POSITION),
+                ImmutableParameter.of(9, ParameterMode.POSITION))));
+    }
+
+    @Test
+    public void atReturnsEqualsInstruction() {
+        final IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,9,8,9,10,9,4,9,99,-1,8));
+        final Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getMemoryAddress(), is(2));
+        assertThat(instruction.get().getOpcode(), is(Opcode.EQUALS));
+        assertThat(instruction.get().getParameters(), is(List.of(
+                ImmutableParameter.of(9, ParameterMode.POSITION),
+                ImmutableParameter.of(10, ParameterMode.POSITION),
+                ImmutableParameter.of(9, ParameterMode.POSITION))));
+    }
+
+    @Test
     public void atReturnsHaltInstruction() {
         assertThat(computer.at(8).isDefined(), is(true));
         assertThat(computer.at(8).get().getMemoryAddress(), is(8));
@@ -125,6 +171,48 @@ public class IntcodeComputerTest {
     }
 
     @Test
+    public void incrementForSave() {
+        final IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,9,8,9,10,9,4,9,99,-1,8));
+        final Option<Instruction> instruction = testComputer.at(0);
+        assertThat(instruction.get().getIncrement(), is(2));
+    }
+
+    @Test
+    public void incrementForOutput() {
+        final IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,9,8,9,10,9,4,9,99,-1,8));
+        final Option<Instruction> instruction = testComputer.at(6);
+        assertThat(instruction.get().getIncrement(), is(2));
+    }
+
+    @Test
+    public void incrementForJumpIfTrue() {
+        IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,3,1105,0,9,1101,0,0,12,4,12,99,1));
+        Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getIncrement(), is(3));
+    }
+
+    @Test
+    public void incrementForJumpIfFalse() {
+        IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9));
+        Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getIncrement(), is(3));
+    }
+
+    @Test
+    public void incrementForLessThan() {
+        final IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,9,7,9,10,9,4,9,99,-1,8));
+        final Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getIncrement(), is(4));
+    }
+
+    @Test
+    public void incrementForEquals() {
+        final IntcodeComputer testComputer = new IntcodeComputer(Array.of(3,9,8,9,10,9,4,9,99,-1,8));
+        final Option<Instruction> instruction = testComputer.at(2);
+        assertThat(instruction.get().getIncrement(), is(4));
+    }
+
+    @Test
     public void executeExamples() {
         assertThat(new IntcodeComputer(Array.of(1,0,0,0,99)).execute().getMemory(), is(Array.of(2,0,0,0,99)));
         assertThat(new IntcodeComputer(Array.of(2,3,0,3,99)).execute().getMemory(), is(Array.of(2,3,0,6,99)));
@@ -144,4 +232,102 @@ public class IntcodeComputerTest {
         assertThat(computer.getOutput(), is(1002));
     }
 
+    @Test
+    public void executeExamplesWithEquals() {
+        IntcodeComputer computer = new IntcodeComputer(Array.of(3,9,8,9,10,9,4,9,99,-1,8), 5);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,9,8,9,10,9,4,9,99,0,8)));
+        assertThat(computer.getOutput(), is(0));
+
+        computer = new IntcodeComputer(Array.of(3,9,8,9,10,9,4,9,99,-1,8), 8);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,9,8,9,10,9,4,9,99,1,8)));
+        assertThat(computer.getOutput(), is(1));
+
+        computer = new IntcodeComputer(Array.of(3,3,1108,-1,8,3,4,3,99), 8);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,3,1108,1,8,3,4,3,99)));
+        assertThat(computer.getOutput(), is(1));
+
+        computer = new IntcodeComputer(Array.of(3,3,1108,-1,8,3,4,3,99), -1);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,3,1108,0,8,3,4,3,99)));
+        assertThat(computer.getOutput(), is(0));
+    }
+
+    @Test
+    public void executeExamplesWithLessThan() {
+        IntcodeComputer computer = new IntcodeComputer(Array.of(3,9,7,9,10,9,4,9,99,-1,8), 5);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,9,7,9,10,9,4,9,99,1,8)));
+        assertThat(computer.getOutput(), is(1));
+
+        computer = new IntcodeComputer(Array.of(3,9,7,9,10,9,4,9,99,-1,8), 18);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,9,7,9,10,9,4,9,99,0,8)));
+        assertThat(computer.getOutput(), is(0));
+
+        computer = new IntcodeComputer(Array.of(3,3,1107,-1,8,3,4,3,99), -3);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,3,1107,1,8,3,4,3,99)));
+        assertThat(computer.getOutput(), is(1));
+
+        computer = new IntcodeComputer(Array.of(3,3,1107,-1,8,3,4,3,99), 10);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,3,1107,0,8,3,4,3,99)));
+        assertThat(computer.getOutput(), is(0));
+    }
+
+    @Test
+    public void executeExamplesWithJumpIfTrue() {
+        IntcodeComputer computer = new IntcodeComputer(Array.of(3,3,1105,-1,9,1101,0,0,12,4,12,99,1), 5);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,3,1105,5,9,1101,0,0,12,4,12,99,1)));
+        assertThat(computer.getOutput(), is(1));
+
+        computer = new IntcodeComputer(Array.of(3,3,1105,-1,9,1101,0,0,12,4,12,99,1), 0);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,3,1105,0,9,1101,0,0,12,4,12,99,0)));
+        assertThat(computer.getOutput(), is(0));
+    }
+
+    @Test
+    public void executeExamplesWithJumpIfFalse() {
+        IntcodeComputer computer = new IntcodeComputer(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9), 5);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,5,1,1,9)));
+        assertThat(computer.getOutput(), is(1));
+
+        computer = new IntcodeComputer(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9), 0);
+        assertThat(computer.execute().getMemory(), is(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,0,0,1,9)));
+        assertThat(computer.getOutput(), is(0));
+    }
+
+    @Test
+    public void executeLongerExampleBelowEight() {
+        int input = 5;
+        final Array<Integer> memory = Array.of(
+                3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+                1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+                999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
+        IntcodeComputer computer = new IntcodeComputer(memory, input);
+        computer.execute();
+
+        assertThat(computer.getOutput(), is(999));
+    }
+
+    @Test
+    public void executeLongerExampleEqualEight() {
+        int input = 8;
+        final Array<Integer> memory = Array.of(
+                3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+                1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+                999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
+        IntcodeComputer computer = new IntcodeComputer(memory, input);
+        computer.execute();
+
+        assertThat(computer.getOutput(), is(1000));
+    }
+
+    @Test
+    public void executeLongerExampleAboveEight() {
+        int input = 100;
+        final Array<Integer> memory = Array.of(
+                3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+                1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+                999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
+        IntcodeComputer computer = new IntcodeComputer(memory, input);
+        computer.execute();
+
+        assertThat(computer.getOutput(), is(1001));
+    }
 }

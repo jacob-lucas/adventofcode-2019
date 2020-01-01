@@ -1,9 +1,9 @@
 package com.jacoblucas.adventofcode2019.utils.intcode;
 
-import com.jacoblucas.adventofcode2019.utils.InputReader;
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
 import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -25,17 +25,7 @@ public class IntcodeComputer {
     private Array<Integer> memory;
     private int instructionPointer;
     private int input;
-
-    public IntcodeComputer(final String filename, final int input) {
-        memory = InputReader.read(filename)
-                .map(str -> str.split(","))
-                .flatMap(Stream::of)
-                .map(Integer::valueOf)
-                .toArray();
-
-        instructionPointer = 0;
-        this.input = input;
-    }
+    private int output;
 
     public IntcodeComputer(final Array<Integer> program) {
         this(program, 0);
@@ -45,6 +35,7 @@ public class IntcodeComputer {
         memory = program;
         instructionPointer = 0;
         this.input = input;
+        this.output = Integer.MIN_VALUE;
     }
 
     public Array<Integer> getMemory() {
@@ -52,7 +43,11 @@ public class IntcodeComputer {
     }
 
     public int getOutput() {
-        return getMemory().get(0);
+        if (output == Integer.MIN_VALUE) {
+            return getMemory().get(0);
+        } else {
+            return output;
+        }
     }
 
     public IntcodeComputer update(final Map<Integer, Integer> addressValueMap) {
@@ -76,15 +71,30 @@ public class IntcodeComputer {
             return BREAK;
         }
 
+        final int currentInstructionPointer = instructionPointer;
+
 //        System.out.println(String.format("[pos=%d] Before: %s", instructionPointer, memory));
+
         final Opcode opcode = instruction.getOpcode();
-        if (List.of(Opcode.SAVE, Opcode.OUTPUT).contains(opcode)) {
+        if (opcode == Opcode.SAVE) {
             memory = instruction.execute(memory, input);
+        } else if (opcode == Opcode.OUTPUT) {
+            output = instruction.getParameterValue(0, memory);
+            System.out.println(String.format("%s INPUT=%d OUTPUT=%d", instruction, input, output));
+        } else if (List.of(Opcode.JUMP_IF_TRUE, Opcode.JUMP_IF_FALSE).contains(opcode)) {
+            final int jumpToIndex = instruction.calculateInstructionPointer(memory);
+            if (jumpToIndex > 0) {
+                instructionPointer = jumpToIndex;
+            }
         } else {
             memory = instruction.execute(memory);
         }
 
-        instructionPointer += instruction.getIncrement();
+        if (instructionPointer == currentInstructionPointer) {
+            // only increment if an instruction has not adjusted the instruction pointer
+            instructionPointer += instruction.getIncrement();
+        }
+
 //        System.out.println(String.format("[pos=%d] After: %s", instructionPointer, memory));
 
         return CONTINUE;
@@ -101,40 +111,38 @@ public class IntcodeComputer {
         }
 
         final Integer instruction = integerOption.get();
-        return getOpcode(instruction)
-                .map(o -> Match(o).of(
-                        Case($(isIn(Opcode.ADD, Opcode.MULTIPLY)), () -> {
-                            final List<Option<Parameter>> params = List.of(
-                                    getParameter(instruction, address, 1),
-                                    getParameter(instruction, address, 2),
-                                    getParameter(instruction, address, 3));
-                            if (params.contains(Option.none())) {
-                                return PROGRAM_HALT;
-                            }
+        final Option<Opcode> opcodeOption = getOpcode(instruction);
+        if (opcodeOption.isEmpty()) {
+            return Option.none();
+        }
 
-                            return ImmutableInstruction.builder()
-                                    .memoryAddress(address)
-                                    .opcode(o)
-                                    .parameters(params.map(Option::get))
-                                    .build();
-                        }),
-                        Case($(isIn(Opcode.SAVE, Opcode.OUTPUT)), () -> {
-                            final Option<Parameter> param = getParameter(instruction, address, 1);
-                            if (param.isEmpty()) {
-                                return PROGRAM_HALT;
-                            }
+        final Opcode opcode = opcodeOption.get();
 
-                            return ImmutableInstruction.builder()
-                                    .memoryAddress(address)
-                                    .opcode(o)
-                                    .parameters(List.of(param.get()))
-                                    .build();
-                        }),
-                        Case($(), ImmutableInstruction.builder()
-                                .memoryAddress(address)
-                                .opcode(Opcode.HALT)
-                                .build())
-                ));
+        return Option.of(getInstruction(address, instruction, opcode));
+    }
+
+    private Instruction getInstruction(
+            final int address,
+            final int instruction,
+            final Opcode opcode
+    ) {
+        final int numExpectedParameters = Match(opcode).of(
+                Case($(isIn(Opcode.ADD, Opcode.MULTIPLY, Opcode.LESS_THAN, Opcode.EQUALS)), 3),
+                Case($(isIn(Opcode.JUMP_IF_TRUE, Opcode.JUMP_IF_FALSE)), 2),
+                Case($(isIn(Opcode.SAVE, Opcode.OUTPUT, Opcode.JUMP_IF_TRUE, Opcode.JUMP_IF_FALSE)), 1),
+                Case($(Opcode.HALT), 0));
+
+        final Seq<Option<Parameter>> params = Stream.range(1, numExpectedParameters + 1)
+                .map(n -> getParameter(instruction, address, n));
+        if (params.contains(Option.none())) {
+            return PROGRAM_HALT;
+        }
+
+        return ImmutableInstruction.builder()
+                .memoryAddress(address)
+                .opcode(opcode)
+                .parameters(params.map(Option::get).toList())
+                .build();
     }
 
     Option<Opcode> getOpcode(final int instruction) {

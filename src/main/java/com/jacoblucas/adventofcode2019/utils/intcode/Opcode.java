@@ -1,28 +1,25 @@
 package com.jacoblucas.adventofcode2019.utils.intcode;
 
 import io.vavr.Function2;
+import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.API.Match;
-
 public enum Opcode {
-    ADD(Integer::sum),
-    MULTIPLY((a, b) -> a * b),
-    SAVE((a, b) -> 0),
-    OUTPUT((a, b) -> 0),
-    HALT((a, b) -> -1);
+    ADD(1, Integer::sum),
+    MULTIPLY(2, (a, b) -> a * b),
+    SAVE(3, null),
+    OUTPUT(4, null),
+    JUMP_IF_TRUE(5, (a, b) -> a != 0 ? b : 0),
+    JUMP_IF_FALSE(6, (a, b) -> a == 0 ? b : 0),
+    LESS_THAN(7, (a, b) -> a < b ? 1 : 0),
+    EQUALS(8, (a, b) -> a.equals(b) ? 1 : 0),
+    HALT(99, null);
 
-    private static final int ADD_CODE = 1;
-    private static final int MULTIPLY_CODE = 2;
-    private static final int SAVE_CODE = 3;
-    private static final int OUTPUT_CODE = 4;
-    private static final int HALT_CODE = 99;
-
+    private final int code;
     private final Function2<Integer, Integer, Integer> func;
 
-    Opcode(final Function2<Integer, Integer, Integer> func) {
+    Opcode(final int code, final Function2<Integer, Integer, Integer> func) {
+        this.code = code;
         this.func = func;
     }
 
@@ -31,13 +28,6 @@ public enum Opcode {
     }
 
     public static Option<Opcode> of(final int code) {
-        return Match(code).of(
-                Case($(ADD_CODE), Option.some(ADD)),
-                Case($(MULTIPLY_CODE), Option.some(MULTIPLY)),
-                Case($(SAVE_CODE), Option.some(SAVE)),
-                Case($(OUTPUT_CODE), Option.some(OUTPUT)),
-                Case($(HALT_CODE), Option.some(HALT)),
-                Case($(), Option.none())
-        );
+        return Stream.of(Opcode.values()).filter(o -> o.code == code).headOption();
     }
 }
