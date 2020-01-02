@@ -1,4 +1,4 @@
-package com.jacoblucas.adventofcode2019.utils.intcode;
+package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 
 import io.vavr.control.Option;
 
