@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import java.util.stream.Collectors;
 
-import static com.jacoblucas.adventofcode2019.day6.OrbitMap.CENTER_OF_MASS;
 import static com.jacoblucas.adventofcode2019.day6.OrbitMap.COM;
 import static io.vavr.API.None;
 import static io.vavr.API.Some;
@@ -34,7 +33,7 @@ public class OrbitMapTest {
 
     @Test
     public void testGet() {
-        assertThat(orbitMap.get(COM), is(Some(CENTER_OF_MASS)));
+        assertThat(orbitMap.get(COM), is(Some(orbitMap.centerOfMass)));
         assertThat(orbitMap.get("unknown"), is(None()));
     }
 
@@ -49,7 +48,7 @@ public class OrbitMapTest {
 
         final SpaceObject a = spaceObjectTry.get();
         assertThat(a.getId(), is(id));
-        assertThat(a.getPrimary(), is(CENTER_OF_MASS));
+        assertThat(a.getPrimary(), is(orbitMap.centerOfMass));
         assertThat(a.getSatellites(), is(List.of()));
         assertThat(a.getPrimary().getSatellites(), contains(a));
     }

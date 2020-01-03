@@ -10,12 +10,13 @@ import io.vavr.control.Validation;
 
 public class OrbitMap {
     static final String COM = "COM";
-    static final SpaceObject CENTER_OF_MASS = new SpaceObject(COM, null);
+    SpaceObject centerOfMass;
 
     private Map<String, SpaceObject> objects;
 
     public OrbitMap() {
-        objects = HashMap.of(COM, CENTER_OF_MASS);
+        centerOfMass = new SpaceObject(COM, null);
+        objects = HashMap.of(COM, centerOfMass);
     }
 
     public Option<SpaceObject> get(final String id) {
