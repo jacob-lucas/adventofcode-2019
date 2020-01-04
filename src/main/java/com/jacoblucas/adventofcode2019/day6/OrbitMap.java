@@ -2,8 +2,12 @@ package com.jacoblucas.adventofcode2019.day6;
 
 
 import io.vavr.collection.HashMap;
+import io.vavr.collection.HashSet;
+import io.vavr.collection.List;
 import io.vavr.collection.Map;
+import io.vavr.collection.Queue;
 import io.vavr.collection.Seq;
+import io.vavr.collection.Set;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 import io.vavr.control.Validation;
@@ -57,6 +61,52 @@ public class OrbitMap {
                 return newSatellite;
             }
         });
+    }
+
+    public List<SpaceObject> path(final String fromId, final String toId) {
+        final Option<SpaceObject> fromOption = get(fromId);
+        final Option<SpaceObject> toOption = get(toId);
+        if (fromOption.isEmpty() || toOption.isEmpty()) {
+            return List.of();
+        }
+
+        final SpaceObject from = fromOption.get();
+        final SpaceObject to = toOption.get();
+
+        return path(to, List.of(), Queue.of(from), HashSet.of());
+    }
+
+    private List<SpaceObject> path(final SpaceObject destination, List<SpaceObject> pathSoFar, Queue<SpaceObject> queue, Set<SpaceObject> visited) {
+        if (queue.isEmpty()) {
+            return List.of(); // not found
+        }
+
+        final SpaceObject current = queue.head();
+        final List<SpaceObject> path = pathSoFar.append(current);
+        final Set<SpaceObject> updatedVisited = visited.add(current);
+
+        if (current.equals(destination)) {
+            return path;
+        } else {
+            final SpaceObject primary = current.getPrimary();
+            final List<SpaceObject> unvistedSatellites = current.getSatellites().filter(s -> !updatedVisited.contains(s));
+            Queue<SpaceObject> updatedQueue = queue.tail();
+
+            // attempt to find in all unvisited satellites
+            for (final SpaceObject s : unvistedSatellites) {
+                final List<SpaceObject> attemptedPath = path(destination, path, updatedQueue.append(s), updatedVisited);
+                if (!attemptedPath.isEmpty()) {
+                    return attemptedPath;
+                }
+            }
+
+            // add primary to the queue
+            if (primary != null && !updatedVisited.contains(primary)) {
+                updatedQueue = updatedQueue.append(primary);
+            }
+
+            return path(destination, path, updatedQueue, updatedVisited);
+        }
     }
 
     int size() {

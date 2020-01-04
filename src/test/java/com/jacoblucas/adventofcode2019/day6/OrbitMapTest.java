@@ -165,4 +165,50 @@ public class OrbitMapTest {
 
         assertThat(orbitMap.checksum(), is(42));
     }
+
+    @Test
+    public void testPathFromUnknown() {
+        orbitMap.addSatellite("D", "C");
+        assertThat(orbitMap.path("foo", "D"), is(List.of()));
+    }
+
+    @Test
+    public void testPathToUnknown() {
+        orbitMap.addSatellite("D", "C");
+        assertThat(orbitMap.path("D", "foo"), is(List.of()));
+    }
+
+    @Test
+    public void testPathWithUnknowns() {
+        assertThat(orbitMap.path("foo", "bar"), is(List.of()));
+    }
+
+    @Test
+    public void testSimplePath() {
+        orbitMap.addSatellite("B", COM);
+        orbitMap.addSatellite("C", "B");
+
+        final List<SpaceObject> path = orbitMap.path("B", "C");
+        assertThat(path.map(SpaceObject::getId).toList(), is(List.of("B", "C")));
+    }
+
+    @Test
+    public void testComplexPath() {
+        orbitMap.addSatellite("B", COM);
+        orbitMap.addSatellite("C", "B");
+        orbitMap.addSatellite("D", "C");
+        orbitMap.addSatellite("E", "D");
+        orbitMap.addSatellite("F", "E");
+        orbitMap.addSatellite("G", "B");
+        orbitMap.addSatellite("H", "G");
+        orbitMap.addSatellite("I", "D");
+        orbitMap.addSatellite("J", "E");
+        orbitMap.addSatellite("K", "J");
+        orbitMap.addSatellite("L", "K");
+        orbitMap.addSatellite("YOU", "K");
+        orbitMap.addSatellite("SAN", "I");
+
+        final List<SpaceObject> path = orbitMap.path("YOU", "SAN");
+        assertThat(path.map(SpaceObject::getId).toList(), is(List.of("YOU", "K", "J", "E", "D", "I", "SAN")));
+    }
 }

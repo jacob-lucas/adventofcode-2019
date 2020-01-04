@@ -2,6 +2,8 @@ package com.jacoblucas.adventofcode2019.day6;
 
 import io.vavr.collection.List;
 
+import java.util.Objects;
+
 public class SpaceObject {
     private final String id;
     private SpaceObject primary;
@@ -11,6 +13,19 @@ public class SpaceObject {
         this.id = id;
         this.primary = primary;
         this.satellites = List.of();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SpaceObject that = (SpaceObject) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
