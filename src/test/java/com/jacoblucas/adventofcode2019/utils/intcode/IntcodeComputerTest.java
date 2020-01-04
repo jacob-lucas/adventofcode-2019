@@ -1,6 +1,7 @@
 package com.jacoblucas.adventofcode2019.utils.intcode;
 
 import io.vavr.collection.Array;
+import io.vavr.collection.Queue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class IntcodeComputerTest {
 
     @Test
     public void executeExamplesWithModes() {
-        computer.feed(Array.of(3, 0, 4, 0, 99), 5);
+        computer.feed(Array.of(3, 0, 4, 0, 99), Queue.of(5));
         assertThat(computer.execute().getMemory(), is(Array.of(5,0,4,0,99)));
         assertThat(computer.getOutput(), is(5));
 
@@ -50,60 +51,60 @@ public class IntcodeComputerTest {
 
     @Test
     public void executeExamplesWithEquals() {
-        computer.feed(Array.of(3,9,8,9,10,9,4,9,99,-1,8), 5);
+        computer.feed(Array.of(3,9,8,9,10,9,4,9,99,-1,8), Queue.of(5));
         assertThat(computer.execute().getMemory(), is(Array.of(3,9,8,9,10,9,4,9,99,0,8)));
         assertThat(computer.getOutput(), is(0));
 
-        computer.feed(Array.of(3,9,8,9,10,9,4,9,99,-1,8), 8);
+        computer.feed(Array.of(3,9,8,9,10,9,4,9,99,-1,8), Queue.of(8));
         assertThat(computer.execute().getMemory(), is(Array.of(3,9,8,9,10,9,4,9,99,1,8)));
         assertThat(computer.getOutput(), is(1));
 
-        computer.feed(Array.of(3,3,1108,-1,8,3,4,3,99), 8);
+        computer.feed(Array.of(3,3,1108,-1,8,3,4,3,99), Queue.of(8));
         assertThat(computer.execute().getMemory(), is(Array.of(3,3,1108,1,8,3,4,3,99)));
         assertThat(computer.getOutput(), is(1));
 
-        computer.feed(Array.of(3,3,1108,-1,8,3,4,3,99), -1);
+        computer.feed(Array.of(3,3,1108,-1,8,3,4,3,99), Queue.of(-1));
         assertThat(computer.execute().getMemory(), is(Array.of(3,3,1108,0,8,3,4,3,99)));
         assertThat(computer.getOutput(), is(0));
     }
 
     @Test
     public void executeExamplesWithLessThan() {
-        computer.feed(Array.of(3,9,7,9,10,9,4,9,99,-1,8), 5);
+        computer.feed(Array.of(3,9,7,9,10,9,4,9,99,-1,8), Queue.of(5));
         assertThat(computer.execute().getMemory(), is(Array.of(3,9,7,9,10,9,4,9,99,1,8)));
         assertThat(computer.getOutput(), is(1));
 
-        computer.feed(Array.of(3,9,7,9,10,9,4,9,99,-1,8), 18);
+        computer.feed(Array.of(3,9,7,9,10,9,4,9,99,-1,8), Queue.of(18));
         assertThat(computer.execute().getMemory(), is(Array.of(3,9,7,9,10,9,4,9,99,0,8)));
         assertThat(computer.getOutput(), is(0));
 
-        computer.feed(Array.of(3,3,1107,-1,8,3,4,3,99), -3);
+        computer.feed(Array.of(3,3,1107,-1,8,3,4,3,99), Queue.of(-3));
         assertThat(computer.execute().getMemory(), is(Array.of(3,3,1107,1,8,3,4,3,99)));
         assertThat(computer.getOutput(), is(1));
 
-        computer.feed(Array.of(3,3,1107,-1,8,3,4,3,99), 10);
+        computer.feed(Array.of(3,3,1107,-1,8,3,4,3,99), Queue.of(10));
         assertThat(computer.execute().getMemory(), is(Array.of(3,3,1107,0,8,3,4,3,99)));
         assertThat(computer.getOutput(), is(0));
     }
 
     @Test
     public void executeExamplesWithJumpIfTrue() {
-        computer.feed(Array.of(3,3,1105,-1,9,1101,0,0,12,4,12,99,1), 5);
+        computer.feed(Array.of(3,3,1105,-1,9,1101,0,0,12,4,12,99,1), Queue.of(5));
         assertThat(computer.execute().getMemory(), is(Array.of(3,3,1105,5,9,1101,0,0,12,4,12,99,1)));
         assertThat(computer.getOutput(), is(1));
 
-        computer.feed(Array.of(3,3,1105,-1,9,1101,0,0,12,4,12,99,1), 0);
+        computer.feed(Array.of(3,3,1105,-1,9,1101,0,0,12,4,12,99,1), Queue.of(0));
         assertThat(computer.execute().getMemory(), is(Array.of(3,3,1105,0,9,1101,0,0,12,4,12,99,0)));
         assertThat(computer.getOutput(), is(0));
     }
 
     @Test
     public void executeExamplesWithJumpIfFalse() {
-        computer.feed(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9), 5);
+        computer.feed(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9), Queue.of(5));
         assertThat(computer.execute().getMemory(), is(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,5,1,1,9)));
         assertThat(computer.getOutput(), is(1));
 
-        computer.feed(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9), 0);
+        computer.feed(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,-1,0,1,9), Queue.of(0));
         assertThat(computer.execute().getMemory(), is(Array.of(3,12,6,12,15,1,13,14,13,4,13,99,0,0,1,9)));
         assertThat(computer.getOutput(), is(0));
     }
@@ -114,7 +115,7 @@ public class IntcodeComputerTest {
                 3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
                 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
                 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
-        computer.feed(memory, 5);
+        computer.feed(memory, Queue.of(5));
         computer.execute();
 
         assertThat(computer.getOutput(), is(999));
@@ -126,7 +127,7 @@ public class IntcodeComputerTest {
                 3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
                 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
                 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
-        computer.feed(memory, 8);
+        computer.feed(memory, Queue.of(8));
         computer.execute();
 
         assertThat(computer.getOutput(), is(1000));
@@ -138,7 +139,7 @@ public class IntcodeComputerTest {
                 3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
                 1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
                 999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
-        computer.feed(memory, 100);
+        computer.feed(memory, Queue.of(100));
         computer.execute();
 
         assertThat(computer.getOutput(), is(1001));

@@ -4,7 +4,7 @@ import com.jacoblucas.adventofcode2019.utils.intcode.instructions.Instruction;
 import com.jacoblucas.adventofcode2019.utils.intcode.instructions.InstructionFactory;
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
-import io.vavr.control.Option;
+import io.vavr.collection.Queue;
 import io.vavr.control.Try;
 
 public class IntcodeComputer {
@@ -13,14 +13,14 @@ public class IntcodeComputer {
 
     private Array<Integer> memory;
     private int instructionPointer;
-    private int input;
+    private Queue<Integer> input;
     private int output;
 
     public void feed(final Array<Integer> program) {
-        feed(program, Integer.MIN_VALUE);
+        feed(program, Queue.empty());
     }
 
-    public void feed(Array<Integer> program, int input) {
+    public void feed(Array<Integer> program, final Queue<Integer> input) {
         this.instructionPointer = 0;
         this.memory = program;
         this.input = input;
@@ -38,7 +38,7 @@ public class IntcodeComputer {
     public IntcodeComputer execute() {
         int result = CONTINUE;
         while (result == CONTINUE) {
-            final Try<Instruction> instruction = InstructionFactory.at(instructionPointer, memory, input == Integer.MIN_VALUE ? Option.none() : Option.of(input));
+            final Try<Instruction> instruction = InstructionFactory.at(instructionPointer, memory, input.headOption());
             result = instruction.map(this::execute).getOrElse(BREAK);
         }
         return this;
@@ -58,7 +58,10 @@ public class IntcodeComputer {
         final Opcode opcode = instruction.getOpcode();
         if (opcode == Opcode.OUTPUT) {
             output = (Integer) result;
-            System.out.println(String.format("%s INPUT=%d OUTPUT=%d", instruction, input, output));
+//            System.out.println(String.format("%s OUTPUT=%d", instruction, output));
+        } else if (opcode == Opcode.SAVE) {
+            input = input.tail();
+            memory = (Array<Integer>) result;
         } else if (List.of(Opcode.JUMP_IF_TRUE, Opcode.JUMP_IF_FALSE).contains(opcode)) {
             final int jumpToIndex = (Integer) result;
             if (jumpToIndex > 0) {

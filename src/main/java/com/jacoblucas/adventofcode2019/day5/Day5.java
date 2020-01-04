@@ -3,6 +3,7 @@ package com.jacoblucas.adventofcode2019.day5;
 import com.jacoblucas.adventofcode2019.utils.InputReader;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
 import io.vavr.collection.Array;
+import io.vavr.collection.Queue;
 import io.vavr.collection.Stream;
 
 public class Day5 {
@@ -14,11 +15,11 @@ public class Day5 {
                 .toArray();
 
         IntcodeComputer computer = new IntcodeComputer();
-        computer.feed(input, 1);
+        computer.feed(input, Queue.of(1));
         computer.execute();
         System.out.println(computer.getOutput());
 
-        computer.feed(input, 5);
+        computer.feed(input, Queue.of(5));
         computer.execute();
         System.out.println(computer.getOutput());
     }
