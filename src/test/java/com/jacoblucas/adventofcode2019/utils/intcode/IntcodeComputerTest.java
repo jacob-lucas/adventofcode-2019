@@ -144,4 +144,44 @@ public class IntcodeComputerTest {
 
         assertThat(computer.getOutput(), is(1001));
     }
+
+    @Test
+    public void testOutputSubscription() {
+        final Array<Integer> memory = Array.of(
+                3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+                1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+                999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
+        computer.feed(memory, Queue.of(100));
+
+        final TestReceiver receiver = new TestReceiver();
+        computer.subscribe(receiver);
+
+        computer.execute();
+
+        assertThat(receiver.getReceived(), is(1001));
+    }
+
+    @Test(timeout = 500)
+    public void testAwaitsInput() {
+        final Array<Integer> memory = Array.of(
+                3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,
+                1106, 0, 36, 98, 0, 0, 1002, 21, 125, 20, 4, 20, 1105, 1, 46, 104,
+                999, 1105, 1, 46, 1101, 1000, 1, 20, 4, 20, 1105, 1, 46, 98, 99);
+        computer.feed(memory); // no input
+
+        Runnable t1 = () -> {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                // do nothing
+            }
+            computer.receiveInput(100);
+        };
+        t1.run();
+
+        computer.execute();
+
+        assertThat(computer.getOutput(), is(1001));
+    }
+
 }

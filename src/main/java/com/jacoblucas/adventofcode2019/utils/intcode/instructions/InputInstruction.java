@@ -16,7 +16,6 @@ public abstract class InputInstruction extends Instruction<Array<Integer>> {
     @Value.Check
     public void check()  {
         Preconditions.checkState(getOpcode() == Opcode.SAVE, "InputInstruction must have INPUT opcode");
-        Preconditions.checkState(getInput().isDefined(), "InputInstruction must contain valid input");
         Preconditions.checkState(getParameters().size() == 1, "InputInstruction must contain only one parameter");
     }
 }
