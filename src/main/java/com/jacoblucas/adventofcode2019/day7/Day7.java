@@ -12,9 +12,20 @@ public class Day7 {
                 .map(Integer::valueOf)
                 .toArray();
 
-        final Circuit circuit = new Circuit(5, program);
-        final int[] max = {Integer.MIN_VALUE};
+        int[] max = {Integer.MIN_VALUE};
         Array.of(0,1,2,3,4).permutations().forEach(phaseSetting -> {
+            final Circuit circuit = new Circuit(5, program, CircuitMode.RUN_ONCE);
+            final int result = circuit.run(phaseSetting.toJavaArray(Integer.class));
+            if (result > max[0]) {
+                max[0] = result;
+            }
+        });
+
+        System.out.println(max[0]);
+
+        max[0] = Integer.MIN_VALUE;
+        Array.of(5,6,7,8,9).permutations().forEach(phaseSetting -> {
+            final Circuit circuit = new Circuit(5, program, CircuitMode.LOOP);
             final int result = circuit.run(phaseSetting.toJavaArray(Integer.class));
             if (result > max[0]) {
                 max[0] = result;
