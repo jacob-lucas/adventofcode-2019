@@ -1,16 +1,16 @@
 package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 
 import com.google.common.base.Preconditions;
+import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData;
 import com.jacoblucas.adventofcode2019.utils.intcode.Opcode;
-import io.vavr.collection.Array;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public abstract class HaltInstruction extends Instruction<Array<Integer>> {
+public abstract class HaltInstruction extends Instruction<Integer> {
     @Override
-    public Array<Integer> execute(final Array<Integer> program) {
+    public Integer execute(final IntcodeComputerData data) {
         // do nothing
-        return program;
+        return 0;
     }
 
     @Value.Check

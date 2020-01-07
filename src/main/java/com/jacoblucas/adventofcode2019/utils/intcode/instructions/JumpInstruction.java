@@ -1,21 +1,30 @@
 package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 
 import com.google.common.base.Preconditions;
+import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData;
 import com.jacoblucas.adventofcode2019.utils.intcode.Opcode;
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import org.immutables.value.Value;
 
+import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.INSTRUCTION_POINTER_KEY;
+import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
+
 @Value.Immutable
 public abstract class JumpInstruction extends Instruction<Integer> {
     @Override
-    public Integer execute(final Array<Integer> program) {
+    public Integer execute(final IntcodeComputerData data) {
+        final Array<Integer> memory = data.get(MEMORY_KEY, Array.<Integer>of().getClass());
         final List<Parameter> parameters = getParameters();
-        final Parameter p1 = getParameters().get(0);
-        final Parameter p2 = getParameters().get(1);
-        final int a = p1.getMode() == ParameterMode.POSITION ? program.get(p1.getValue()) : p1.getValue();
-        final int b = p2.getMode() == ParameterMode.POSITION ? program.get(p2.getValue()) : p2.getValue();
-        return getOpcode().apply(a, b);
+        final Parameter p1 = parameters.get(0);
+        final Parameter p2 = parameters.get(1);
+
+        final int result = getOpcode().apply(p1.resolve(memory), p2.resolve(memory));
+        if (result >= 0) {
+            data.put(INSTRUCTION_POINTER_KEY, result);
+        }
+
+        return result;
     }
 
     @Value.Check

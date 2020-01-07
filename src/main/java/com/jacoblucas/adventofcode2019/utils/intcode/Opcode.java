@@ -9,8 +9,8 @@ public enum Opcode {
     MULTIPLY(2, (a, b) -> a * b),
     SAVE(3, null),
     OUTPUT(4, null),
-    JUMP_IF_TRUE(5, (a, b) -> a != 0 ? b : 0),
-    JUMP_IF_FALSE(6, (a, b) -> a == 0 ? b : 0),
+    JUMP_IF_TRUE(5, (a, b) -> a != 0 ? b : -1),
+    JUMP_IF_FALSE(6, (a, b) -> a == 0 ? b : -1),
     LESS_THAN(7, (a, b) -> a < b ? 1 : 0),
     EQUALS(8, (a, b) -> a.equals(b) ? 1 : 0),
     HALT(99, null);

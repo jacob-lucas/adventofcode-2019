@@ -1,7 +1,7 @@
 package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 
+import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData;
 import com.jacoblucas.adventofcode2019.utils.intcode.Opcode;
-import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import org.junit.Test;
 
@@ -18,8 +18,7 @@ public class HaltInstructionTest {
 
     @Test
     public void testExecute() {
-        final Array<Integer> program = Array.of(1, 4, 3, 4, 33, 99);
-        assertThat(HALT.execute(program), is(program));
+        assertThat(HALT.execute(new IntcodeComputerData()), is(0));
     }
 
     @Test
