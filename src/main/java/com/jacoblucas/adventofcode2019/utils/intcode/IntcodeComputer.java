@@ -10,6 +10,7 @@ import io.vavr.collection.List;
 import io.vavr.collection.Queue;
 import io.vavr.control.Try;
 
+import java.math.BigInteger;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -22,17 +23,17 @@ public class IntcodeComputer {
     private static final int CONTINUE = 0;
     private static final int BREAK = 1;
 
-    private BlockingQueue<Integer> input;
-    private int output;
+    private BlockingQueue<BigInteger> input;
+    private List<BigInteger> output;
     private List<IntcodeComputerOutputReceiver> receivers = List.empty();
     private IntcodeComputerData data = new IntcodeComputerData();
 
-    public void feed(final Array<Integer> program) {
+    public void feed(final Array<BigInteger> program) {
         feed(program, Queue.empty());
     }
 
-    public void feed(Array<Integer> program, final Queue<Integer> input) {
-        this.output = Integer.MIN_VALUE;
+    public void feed(Array<BigInteger> program, final Queue<BigInteger> input) {
+        this.output = List.empty();
         this.input = new LinkedBlockingQueue<>();
         this.input.addAll(input.toJavaList());
 
@@ -45,19 +46,19 @@ public class IntcodeComputer {
 //        System.out.println(String.format("[%s] Added subscriber [%s]", Thread.currentThread().getName(), receiver.id()));
     }
 
-    private void publish(final int output) {
+    private void publish(final BigInteger output) {
         receivers.forEach(r -> {
             r.receive(output);
 //            System.out.println(String.format("[%s] Published output [%d] to subscriber [%s]", Thread.currentThread().getName(), output, r.id()));
         });
     }
 
-    public void receiveInput(final int input) {
+    public void receiveInput(final BigInteger input) {
         this.input.add(input);
     }
 
-    public int getOutput() {
-        return output == Integer.MIN_VALUE ? getMemory().get(0) : output;
+    public BigInteger getOutput() {
+        return output.isEmpty() ? getMemory().get(0) : output.last();
     }
 
     public IntcodeComputer execute() {
@@ -66,7 +67,19 @@ public class IntcodeComputer {
         while (result == CONTINUE) {
             final int instructionPointer = getInstructionPointer();
             final Try<Instruction> instruction = InstructionFactory.at(instructionPointer, getMemory(), none());
-            result = instruction.map(this::execute).getOrElse(BREAK);
+            if (instruction.isFailure()) {
+                instruction.getCause().printStackTrace();
+                result = BREAK;
+            } else {
+                final Try<Integer> resultTry = instruction.map(this::execute);
+                if (resultTry.isSuccess()) {
+                    result = resultTry.get();
+                } else {
+                    System.out.println(String.format("[pos=%d] Failed to execute %s", instructionPointer, instruction));
+                    resultTry.getCause().printStackTrace();
+                    result = BREAK;
+                }
+            }
         }
 //        System.out.println(String.format("[%s] end", Thread.currentThread().getName()));
         return this;
@@ -91,8 +104,8 @@ public class IntcodeComputer {
         final Object result = instruction.execute(data);
 
         if (instruction instanceof OutputInstruction) {
-            output = (Integer) result;
-            publish(output);
+            output = output.append((BigInteger)result);
+            publish((BigInteger)result);
 //            System.out.println(String.format("%s OUTPUT=%d", instruction, output));
         }
 
@@ -107,11 +120,11 @@ public class IntcodeComputer {
         return CONTINUE;
     }
 
-    int getInstructionPointer() {
+    private int getInstructionPointer() {
         return data.get(INSTRUCTION_POINTER_KEY, Integer.class);
     }
 
-    Array<Integer> getMemory() {
+    Array<BigInteger> getMemory() {
         return data.get(MEMORY_KEY, Array.class);
     }
 }

@@ -7,19 +7,21 @@ import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
 
+import java.math.BigInteger;
+
 import static io.vavr.API.$;
 import static io.vavr.API.Case;
 import static io.vavr.API.Match;
 import static io.vavr.Predicates.isIn;
 
 public class InstructionFactory {
-    public static Try<Instruction> at(final int address, final Array<Integer> program) {
+    public static Try<Instruction> at(final int address, final Array<BigInteger> program) {
         return at(address, program, Option.none());
     }
 
-    public static Try<Instruction> at(final int address, final Array<Integer> program, final Option<Integer> input) {
+    public static Try<Instruction> at(final int address, final Array<BigInteger> program, final Option<BigInteger> input) {
         return Try.of(() -> {
-            final int instruction = program.get(address);
+            final int instruction = program.get(address).intValue();
             final Opcode opcode = Opcode.of(instruction % 100).get();
 
             final int numExpectedParameters = Match(opcode).of(
@@ -71,9 +73,9 @@ public class InstructionFactory {
             final int instruction,
             final int address,
             final int parameterNumber,
-            final Array<Integer> program
+            final Array<BigInteger> program
     ) {
-        final int value = program.get(address + parameterNumber);
+        final BigInteger value = program.get(address + parameterNumber);
         final ParameterMode mode = getMode(instruction, parameterNumber);
         return ImmutableParameter.builder()
                 .value(value)

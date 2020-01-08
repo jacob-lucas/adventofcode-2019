@@ -6,20 +6,22 @@ import io.vavr.collection.Array;
 import io.vavr.collection.Queue;
 import io.vavr.collection.Stream;
 
+import java.math.BigInteger;
+
 public class Day5 {
     public static void main(String[] args) {
-        final Array<Integer> input = InputReader.read("day5-input.txt")
+        final Array<BigInteger> input = InputReader.read("day5-input.txt")
                 .map(str -> str.split(","))
                 .flatMap(Stream::of)
-                .map(Integer::valueOf)
+                .map(BigInteger::new)
                 .toArray();
 
         IntcodeComputer computer = new IntcodeComputer();
-        computer.feed(input, Queue.of(1));
+        computer.feed(input, Queue.of(BigInteger.ONE));
         computer.execute();
         System.out.println(computer.getOutput());
 
-        computer.feed(input, Queue.of(5));
+        computer.feed(input, Queue.of(BigInteger.valueOf(5)));
         computer.execute();
         System.out.println(computer.getOutput());
     }

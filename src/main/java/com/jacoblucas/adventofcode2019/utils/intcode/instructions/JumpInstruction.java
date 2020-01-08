@@ -7,21 +7,23 @@ import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import org.immutables.value.Value;
 
+import java.math.BigInteger;
+
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.INSTRUCTION_POINTER_KEY;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
 
 @Value.Immutable
-public abstract class JumpInstruction extends Instruction<Integer> {
+public abstract class JumpInstruction extends Instruction<BigInteger> {
     @Override
-    public Integer execute(final IntcodeComputerData data) {
-        final Array<Integer> memory = data.get(MEMORY_KEY, Array.<Integer>of().getClass());
+    public BigInteger execute(final IntcodeComputerData data) {
+        final Array<BigInteger> memory = data.get(MEMORY_KEY, Array.class);
         final List<Parameter> parameters = getParameters();
         final Parameter p1 = parameters.get(0);
         final Parameter p2 = parameters.get(1);
 
-        final int result = getOpcode().apply(p1.resolve(memory), p2.resolve(memory));
-        if (result >= 0) {
-            data.put(INSTRUCTION_POINTER_KEY, result);
+        final BigInteger result = getOpcode().apply(p1.resolve(memory), p2.resolve(memory));
+        if (BigInteger.ZERO.compareTo(result) <= 0) {
+            data.put(INSTRUCTION_POINTER_KEY, result.intValue());
         }
 
         return result;

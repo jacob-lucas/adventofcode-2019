@@ -6,6 +6,8 @@ import io.vavr.collection.List;
 import io.vavr.control.Option;
 import org.immutables.value.Value;
 
+import java.math.BigInteger;
+
 public abstract class Instruction<T> {
     public abstract int getAddress();
 
@@ -14,13 +16,13 @@ public abstract class Instruction<T> {
     public abstract List<Parameter> getParameters();
 
     @Value.Default
-    public Option<Integer> getInput() {
+    public Option<BigInteger> getInput() {
         return Option.none();
     }
 
     public abstract T execute(final IntcodeComputerData data);
 
-    public int getIncrement() {
+    public Integer getIncrement() {
         return 1 + getParameters().size();
     }
 }

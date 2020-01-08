@@ -4,26 +4,28 @@ import io.vavr.Function2;
 import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 
+import java.math.BigInteger;
+
 public enum Opcode {
-    ADD(1, Integer::sum),
-    MULTIPLY(2, (a, b) -> a * b),
+    ADD(1, BigInteger::add),
+    MULTIPLY(2, BigInteger::multiply),
     SAVE(3, null),
     OUTPUT(4, null),
-    JUMP_IF_TRUE(5, (a, b) -> a != 0 ? b : -1),
-    JUMP_IF_FALSE(6, (a, b) -> a == 0 ? b : -1),
-    LESS_THAN(7, (a, b) -> a < b ? 1 : 0),
-    EQUALS(8, (a, b) -> a.equals(b) ? 1 : 0),
+    JUMP_IF_TRUE(5, (a, b) -> a.equals(BigInteger.ZERO) ? BigInteger.valueOf(-1) : b),
+    JUMP_IF_FALSE(6, (a, b) -> a.equals(BigInteger.ZERO) ? b : BigInteger.valueOf(-1)),
+    LESS_THAN(7, (a, b) -> a.compareTo(b) < 0 ? BigInteger.ONE : BigInteger.ZERO),
+    EQUALS(8, (a, b) -> a.equals(b) ? BigInteger.ONE : BigInteger.ZERO),
     HALT(99, null);
 
     private final int code;
-    private final Function2<Integer, Integer, Integer> func;
+    private final Function2<BigInteger, BigInteger, BigInteger> func;
 
-    Opcode(final int code, final Function2<Integer, Integer, Integer> func) {
+    Opcode(final int code, final Function2<BigInteger, BigInteger, BigInteger> func) {
         this.code = code;
         this.func = func;
     }
 
-    public int apply(final int a, final int b) {
+    public BigInteger apply(final BigInteger a, final BigInteger b) {
         return func.apply(a, b);
     }
 

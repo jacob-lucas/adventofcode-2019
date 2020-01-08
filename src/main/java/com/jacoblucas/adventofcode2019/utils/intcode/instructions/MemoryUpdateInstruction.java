@@ -7,17 +7,19 @@ import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import org.immutables.value.Value;
 
+import java.math.BigInteger;
+
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
 
 @Value.Immutable
-public abstract class MemoryUpdateInstruction extends Instruction<Array<Integer>> {
+public abstract class MemoryUpdateInstruction extends Instruction<Array<BigInteger>> {
     @Override
-    public Array<Integer> execute(final IntcodeComputerData data) {
-        Array<Integer> memory = data.get(MEMORY_KEY, Array.<Integer>of().getClass());
+    public Array<BigInteger> execute(final IntcodeComputerData data) {
+        Array<BigInteger> memory = data.get(MEMORY_KEY, Array.class);
         final List<Parameter> parameters = getParameters();
         final Parameter p1 = parameters.get(0);
         final Parameter p2 = parameters.get(1);
-        final int c = parameters.get(2).getValue();
+        final int c = parameters.get(2).getValue().intValue();
 
         memory = memory.update(c, getOpcode().apply(p1.resolve(memory), p2.resolve(memory)));
         data.put(MEMORY_KEY, memory);

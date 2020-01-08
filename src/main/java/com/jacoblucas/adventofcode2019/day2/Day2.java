@@ -5,32 +5,34 @@ import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
 import io.vavr.collection.Array;
 import io.vavr.collection.Stream;
 
+import java.math.BigInteger;
+
 public class Day2 {
     public static void main(String[] args) {
-        Array<Integer> input = InputReader.read("day2-input.txt")
+        Array<BigInteger> input = InputReader.read("day2-input.txt")
                 .map(str -> str.split(","))
                 .flatMap(Stream::of)
-                .map(Integer::valueOf)
+                .map(BigInteger::new)
                 .toArray();
 
-        input = input.update(1, 12);
-        input = input.update(2, 2);
+        input = input.update(1, BigInteger.valueOf(12));
+        input = input.update(2, BigInteger.valueOf(2));
 
         IntcodeComputer computer = new IntcodeComputer();
         computer.feed(input);
         computer.execute();
         System.out.println(computer.getOutput());
 
-        final int desiredOutput = 19690720;
+        final BigInteger desiredOutput = BigInteger.valueOf(19690720);
         boolean found = false;
         for (int noun = 0; noun < 100 && !found; noun++) {
             for (int verb = 0; verb < 100 && !found; verb++) {
-                input = input.update(1, noun);
-                input = input.update(2, verb);
+                input = input.update(1, BigInteger.valueOf(noun));
+                input = input.update(2, BigInteger.valueOf(verb));
                 computer.feed(input);
                 computer.execute();
-                final int output = computer.getOutput();
-                if (output == desiredOutput) {
+                final BigInteger output = computer.getOutput();
+                if (output.equals(desiredOutput)) {
                     System.out.println(String.format("noun[%d] verb[%d] = %d", noun, verb, output));
                     found = true;
                 }

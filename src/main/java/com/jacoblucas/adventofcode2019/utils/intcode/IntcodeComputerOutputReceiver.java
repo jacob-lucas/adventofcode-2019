@@ -1,7 +1,9 @@
 package com.jacoblucas.adventofcode2019.utils.intcode;
 
+import java.math.BigInteger;
+
 public interface IntcodeComputerOutputReceiver {
     String id();
 
-    void receive(final int output);
+    void receive(final BigInteger input);
 }

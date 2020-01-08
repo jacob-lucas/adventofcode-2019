@@ -6,13 +6,15 @@ import io.vavr.collection.Array;
 import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 
+import java.math.BigInteger;
+
 public class Amplifier implements IntcodeComputerOutputReceiver {
     private final int id;
     private final IntcodeComputer computer;
     private Option<Amplifier> connection;
     private Thread thread;
 
-    public Amplifier(final Integer id, final Array<Integer> program) {
+    public Amplifier(final Integer id, final Array<BigInteger> program) {
         this.id = id;
         this.connection = Option.none();
         this.computer = new IntcodeComputer();
@@ -35,17 +37,17 @@ public class Amplifier implements IntcodeComputerOutputReceiver {
     }
 
     @Override
-    public void receive(final int input) {
+    public void receive(final BigInteger input) {
         computer.receiveInput(input);
     }
 
-    public void amplify(final Integer... inputs) {
+    public void amplify(final BigInteger... inputs) {
         Stream.of(inputs).forEach(computer::receiveInput);
         thread = new Thread(computer::execute, id());
         thread.start();
     }
 
-    public int result() {
+    public BigInteger result() {
         return computer.getOutput();
     }
 
