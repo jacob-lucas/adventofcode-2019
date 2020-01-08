@@ -193,14 +193,23 @@ public class IntcodeComputerTest {
     public void supportsLargerNumbers() {
         final BigInteger a = BigInteger.valueOf(34915192);
         final BigInteger b = BigInteger.valueOf(34915192);
-        System.out.println(a.multiply(b));
-
         final Array<BigInteger> program = bigIntegerArray(1102,34915192,34915192,7,4,7,99,0);
         computer.feed(program); // no input
         computer.execute();
 
         assertThat(String.valueOf(computer.getOutput()).length(), is(16));
         assertThat(computer.getOutput(), is(a.multiply(b)));
+    }
+
+    @Test
+    public void outputsLargerNumbers() {
+        final BigInteger a = BigInteger.valueOf(34915192);
+        final BigInteger b = BigInteger.valueOf(34915192);
+
+        computer.feed("104,1125899906842624,99"); // no input
+        computer.execute();
+
+        assertThat(computer.getOutput(), is(new BigInteger("1125899906842624")));
     }
 
 }

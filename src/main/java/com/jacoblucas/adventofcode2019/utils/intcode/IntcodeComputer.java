@@ -8,6 +8,7 @@ import com.jacoblucas.adventofcode2019.utils.intcode.instructions.OutputInstruct
 import io.vavr.collection.Array;
 import io.vavr.collection.List;
 import io.vavr.collection.Queue;
+import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 
 import java.math.BigInteger;
@@ -27,6 +28,13 @@ public class IntcodeComputer {
     private List<BigInteger> output;
     private List<IntcodeComputerOutputReceiver> receivers = List.empty();
     private IntcodeComputerData data = new IntcodeComputerData();
+
+    public void feed(String arr) {
+        final Array<BigInteger> program = Stream.of(arr.split(","))
+                .map(BigInteger::new)
+                .toArray();
+        feed(program);
+    }
 
     public void feed(final Array<BigInteger> program) {
         feed(program, Queue.empty());
