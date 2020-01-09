@@ -3,6 +3,7 @@ package com.jacoblucas.adventofcode2019.utils.intcode;
 import io.vavr.collection.Array;
 import io.vavr.collection.Queue;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.math.BigInteger;
@@ -203,13 +204,19 @@ public class IntcodeComputerTest {
 
     @Test
     public void outputsLargerNumbers() {
-        final BigInteger a = BigInteger.valueOf(34915192);
-        final BigInteger b = BigInteger.valueOf(34915192);
-
         computer.feed("104,1125899906842624,99"); // no input
         computer.execute();
 
         assertThat(computer.getOutput(), is(new BigInteger("1125899906842624")));
+    }
+
+    @Test
+    @Ignore // TODO: come back for this
+    public void supportsLargerThanInitialMemory() {
+        computer.feed("1101,2,3,20,4,20,99");
+        computer.execute();
+
+        assertThat(computer.getOutput(), is(BigInteger.valueOf(5)));
     }
 
 }

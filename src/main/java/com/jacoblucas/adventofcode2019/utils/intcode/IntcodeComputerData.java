@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class IntcodeComputerData {
     public static final String INSTRUCTION_POINTER_KEY = "ip";
     public static final String MEMORY_KEY = "mem";
+    public static final String RELATIVE_BASE_KEY = "rb";
 
     private ConcurrentHashMap<String, Object> data = new ConcurrentHashMap<>();
 

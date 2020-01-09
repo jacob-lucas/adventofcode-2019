@@ -217,6 +217,21 @@ public class InstructionFactoryTest {
     }
 
     @Test
+    public void testRelativeBaseOffset() {
+        final Array<BigInteger> program1 = bigIntegerArray(109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99);
+        final Instruction output = InstructionFactory.at(0, program1).get();
+        assertThat(output, is(ImmutableRelativeBaseOffsetInstruction.builder()
+                .address(0)
+                .opcode(Opcode.RELATIVE_BASE_OFFSET)
+                .parameters(List.of(
+                        ImmutableParameter.builder()
+                                .value(BigInteger.ONE)
+                                .mode(ParameterMode.IMMEDIATE)
+                                .build()))
+                .build()));
+    }
+
+    @Test
     public void testHalt() {
         final Array<BigInteger> program1 = bigIntegerArray(3, 9, 8, 9, 10, 9, 4, 9, 99, 5, 8);
         final Instruction halt = InstructionFactory.at(8, program1).get();

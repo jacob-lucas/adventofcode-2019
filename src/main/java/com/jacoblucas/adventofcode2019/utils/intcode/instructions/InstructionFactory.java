@@ -27,7 +27,7 @@ public class InstructionFactory {
             final int numExpectedParameters = Match(opcode).of(
                     Case($(isIn(Opcode.ADD, Opcode.MULTIPLY, Opcode.LESS_THAN, Opcode.EQUALS)), 3),
                     Case($(isIn(Opcode.JUMP_IF_TRUE, Opcode.JUMP_IF_FALSE)), 2),
-                    Case($(isIn(Opcode.SAVE, Opcode.OUTPUT, Opcode.JUMP_IF_TRUE, Opcode.JUMP_IF_FALSE)), 1),
+                    Case($(isIn(Opcode.SAVE, Opcode.OUTPUT, Opcode.JUMP_IF_TRUE, Opcode.JUMP_IF_FALSE, Opcode.RELATIVE_BASE_OFFSET)), 1),
                     Case($(Opcode.HALT), 0));
 
             final List<Parameter> params = Stream.range(1, numExpectedParameters + 1)
@@ -59,6 +59,11 @@ public class InstructionFactory {
                             .address(address)
                             .opcode(opcode)
                             .input(input)
+                            .parameters(params)
+                            .build()),
+                    Case($(Opcode.RELATIVE_BASE_OFFSET), () -> ImmutableRelativeBaseOffsetInstruction.builder()
+                            .address(address)
+                            .opcode(opcode)
                             .parameters(params)
                             .build()),
                     Case($(), () -> null));

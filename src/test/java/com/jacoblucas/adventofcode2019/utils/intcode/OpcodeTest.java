@@ -11,6 +11,7 @@ import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.JUMP_IF_TRUE;
 import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.LESS_THAN;
 import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.MULTIPLY;
 import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.OUTPUT;
+import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.RELATIVE_BASE_OFFSET;
 import static com.jacoblucas.adventofcode2019.utils.intcode.Opcode.SAVE;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -27,6 +28,7 @@ public class OpcodeTest {
         assertThat(Opcode.of(6), is(Option.some(JUMP_IF_FALSE)));
         assertThat(Opcode.of(7), is(Option.some(LESS_THAN)));
         assertThat(Opcode.of(8), is(Option.some(EQUALS)));
+        assertThat(Opcode.of(9), is(Option.some(RELATIVE_BASE_OFFSET)));
         assertThat(Opcode.of(99), is(Option.some(HALT)));
         assertThat(Opcode.of(100), is(Option.none()));
     }

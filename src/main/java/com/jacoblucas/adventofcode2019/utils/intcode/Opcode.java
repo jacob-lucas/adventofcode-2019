@@ -15,6 +15,7 @@ public enum Opcode {
     JUMP_IF_FALSE(6, (a, b) -> a.equals(BigInteger.ZERO) ? b : BigInteger.valueOf(-1)),
     LESS_THAN(7, (a, b) -> a.compareTo(b) < 0 ? BigInteger.ONE : BigInteger.ZERO),
     EQUALS(8, (a, b) -> a.equals(b) ? BigInteger.ONE : BigInteger.ZERO),
+    RELATIVE_BASE_OFFSET(9, null),
     HALT(99, null);
 
     private final int code;
