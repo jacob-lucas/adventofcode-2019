@@ -38,11 +38,13 @@ public class InstructionFactoryTest {
         assertThat(InstructionFactory.getMode(1, 3), is(ParameterMode.POSITION));
 
         assertThat(InstructionFactory.getMode(101, 1), is(ParameterMode.IMMEDIATE));
+        assertThat(InstructionFactory.getMode(201, 1), is(ParameterMode.RELATIVE));
         assertThat(InstructionFactory.getMode(101, 2), is(ParameterMode.POSITION));
         assertThat(InstructionFactory.getMode(101, 3), is(ParameterMode.POSITION));
 
         assertThat(InstructionFactory.getMode(1101, 1), is(ParameterMode.IMMEDIATE));
         assertThat(InstructionFactory.getMode(1101, 2), is(ParameterMode.IMMEDIATE));
+        assertThat(InstructionFactory.getMode(2101, 2), is(ParameterMode.RELATIVE));
         assertThat(InstructionFactory.getMode(1101, 3), is(ParameterMode.POSITION));
 
         assertThat(InstructionFactory.getMode(10001, 1), is(ParameterMode.POSITION));
@@ -52,6 +54,7 @@ public class InstructionFactoryTest {
         assertThat(InstructionFactory.getMode(11101, 1), is(ParameterMode.IMMEDIATE));
         assertThat(InstructionFactory.getMode(11101, 2), is(ParameterMode.IMMEDIATE));
         assertThat(InstructionFactory.getMode(11101, 3), is(ParameterMode.POSITION));
+        assertThat(InstructionFactory.getMode(21101, 3), is(ParameterMode.POSITION));
     }
 
     @Test

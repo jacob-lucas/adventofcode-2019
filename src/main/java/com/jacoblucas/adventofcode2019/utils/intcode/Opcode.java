@@ -31,6 +31,8 @@ public enum Opcode {
     }
 
     public static Option<Opcode> of(final int code) {
-        return Stream.of(Opcode.values()).filter(o -> o.code == code).headOption();
+        return Stream.of(Opcode.values())
+                .filter(o -> o.code == code)
+                .headOption();
     }
 }

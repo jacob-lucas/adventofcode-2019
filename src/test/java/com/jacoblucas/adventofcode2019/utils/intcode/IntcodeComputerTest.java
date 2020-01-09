@@ -53,6 +53,10 @@ public class IntcodeComputerTest {
         computer.feed(bigIntegerArray(1002,4,3,4,33));
         assertThat(computer.execute().getMemory(), is(bigIntegerArray(1002,4,3,4,99)));
         assertThat(computer.getOutput().intValue(), is(1002));
+
+        computer.feed(bigIntegerArray(109,1,204,-1,209,14,1001,15,2,16,1202,6,2,18,99,9,10,3,12));
+        assertThat(computer.execute().getMemory(), is(bigIntegerArray(109,1,204,-1,209,14,1001,15,2,16,1202,6,2,18,99,9,11,3,22)));
+        assertThat(computer.getOutput().intValue(), is(109));
     }
 
     @Test

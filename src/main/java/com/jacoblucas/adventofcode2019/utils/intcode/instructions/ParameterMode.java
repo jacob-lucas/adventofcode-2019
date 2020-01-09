@@ -1,14 +1,12 @@
 package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 
+import io.vavr.collection.Stream;
 import io.vavr.control.Option;
-
-import static io.vavr.API.$;
-import static io.vavr.API.Case;
-import static io.vavr.API.Match;
 
 public enum ParameterMode {
     POSITION(0),
-    IMMEDIATE(1);
+    IMMEDIATE(1),
+    RELATIVE(2);
 
     private final int mode;
 
@@ -17,10 +15,8 @@ public enum ParameterMode {
     }
 
     public static Option<ParameterMode> of(final int mode) {
-        return Match(mode).of(
-                Case($(POSITION.mode), Option.some(POSITION)),
-                Case($(IMMEDIATE.mode), Option.some(IMMEDIATE)),
-                Case($(), Option.none())
-        );
+        return Stream.of(ParameterMode.values())
+                .filter(pm -> pm.mode == mode)
+                .headOption();
     }
 }

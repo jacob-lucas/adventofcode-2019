@@ -20,6 +20,10 @@ public class InstructionFactory {
     }
 
     public static Try<Instruction> at(final int address, final Array<BigInteger> program, final Option<BigInteger> input) {
+        return at(address, program, input, 0);
+    }
+
+    public static Try<Instruction> at(final int address, final Array<BigInteger> program, final Option<BigInteger> input, final int relativeBase) {
         return Try.of(() -> {
             final int instruction = program.get(address).intValue();
             final Opcode opcode = Opcode.of(instruction % 100).get();
@@ -31,7 +35,7 @@ public class InstructionFactory {
                     Case($(Opcode.HALT), 0));
 
             final List<Parameter> params = Stream.range(1, numExpectedParameters + 1)
-                    .map(n -> getParameter(instruction, address, n, program))
+                    .map(n -> getParameter(instruction, address, n, relativeBase, program))
                     .toList();
 
             return Match(opcode).of(
@@ -78,6 +82,7 @@ public class InstructionFactory {
             final int instruction,
             final int address,
             final int parameterNumber,
+            final int relativeBase,
             final Array<BigInteger> program
     ) {
         final BigInteger value = program.get(address + parameterNumber);
@@ -85,6 +90,7 @@ public class InstructionFactory {
         return ImmutableParameter.builder()
                 .value(value)
                 .mode(mode)
+                .relativeBase(relativeBase)
                 .build();
     }
 

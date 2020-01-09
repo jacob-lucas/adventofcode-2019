@@ -17,6 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.INSTRUCTION_POINTER_KEY;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
+import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.RELATIVE_BASE_KEY;
 import static io.vavr.control.Option.none;
 import static io.vavr.control.Option.some;
 
@@ -45,6 +46,7 @@ public class IntcodeComputer {
         this.input = new LinkedBlockingQueue<>();
         this.input.addAll(input.toJavaList());
 
+        data.put(RELATIVE_BASE_KEY, 0);
         data.put(INSTRUCTION_POINTER_KEY, 0);
         data.put(MEMORY_KEY, program);
     }
@@ -74,7 +76,7 @@ public class IntcodeComputer {
         int result = CONTINUE;
         while (result == CONTINUE) {
             final int instructionPointer = getInstructionPointer();
-            final Try<Instruction> instruction = InstructionFactory.at(instructionPointer, getMemory(), none());
+            final Try<Instruction> instruction = InstructionFactory.at(instructionPointer, getMemory(), none(), getRelativeBase());
             if (instruction.isFailure()) {
                 instruction.getCause().printStackTrace();
                 result = BREAK;
@@ -134,5 +136,9 @@ public class IntcodeComputer {
 
     Array<BigInteger> getMemory() {
         return data.get(MEMORY_KEY, Array.class);
+    }
+
+    private int getRelativeBase() {
+        return data.get(RELATIVE_BASE_KEY, Integer.class);
     }
 }
