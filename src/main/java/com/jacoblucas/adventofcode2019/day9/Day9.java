@@ -15,5 +15,9 @@ public class Day9 {
         computer.feed(program, Queue.of(BigInteger.ONE));
         computer.execute();
         System.out.println(computer.getOutput());
+
+        computer.feed(program, Queue.of(BigInteger.valueOf(2)));
+        computer.execute();
+        System.out.println(computer.getOutput());
     }
 }
