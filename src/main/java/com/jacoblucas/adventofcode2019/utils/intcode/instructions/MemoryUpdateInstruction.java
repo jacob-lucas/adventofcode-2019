@@ -3,8 +3,9 @@ package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 import com.google.common.base.Preconditions;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData;
 import com.jacoblucas.adventofcode2019.utils.intcode.Opcode;
-import io.vavr.collection.Array;
+import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
 import org.immutables.value.Value;
 
 import java.math.BigInteger;
@@ -12,16 +13,21 @@ import java.math.BigInteger;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
 
 @Value.Immutable
-public abstract class MemoryUpdateInstruction extends Instruction<Array<BigInteger>> {
+public abstract class MemoryUpdateInstruction extends Instruction<Map<BigInteger, BigInteger>> {
     @Override
-    public Array<BigInteger> execute(final IntcodeComputerData data) {
-        Array<BigInteger> memory = data.get(MEMORY_KEY, Array.class);
+    public Map<BigInteger, BigInteger> execute(final IntcodeComputerData data) {
+        Map<BigInteger, BigInteger> memory = data.get(MEMORY_KEY, HashMap.class);
         final List<Parameter> parameters = getParameters();
         final Parameter p1 = parameters.get(0);
         final Parameter p2 = parameters.get(1);
-        final int c = parameters.get(2).getValue().intValue();
+        final Parameter p3 = parameters.get(2);
 
-        memory = memory.update(c, getOpcode().apply(p1.resolve(memory), p2.resolve(memory)));
+        BigInteger c = p3.getValue();
+        if (p3.getMode() == ParameterMode.RELATIVE) {
+            c = c.add(BigInteger.valueOf(p3.getRelativeBase()));
+        }
+
+        memory = memory.put(c, getOpcode().apply(p1.resolve(memory), p2.resolve(memory)));
         data.put(MEMORY_KEY, memory);
         return memory;
     }

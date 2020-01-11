@@ -1,13 +1,18 @@
 package com.jacoblucas.adventofcode2019;
 
-import io.vavr.collection.Array;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Map;
 
 import java.math.BigInteger;
 
 public final class TestUtils {
 
-    public static Array<BigInteger> bigIntegerArray(final Integer... ints) {
-        return Array.of(ints).map(BigInteger::valueOf);
+    public static Map<BigInteger, BigInteger> bigIntegerInput(final Integer... ints) {
+        Map<BigInteger, BigInteger> program = HashMap.empty();
+        for (int i=0; i<ints.length; i++) {
+            program = program.put(BigInteger.valueOf(i), BigInteger.valueOf(ints[i]));
+        }
+        return program;
     }
 
 }

@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static com.jacoblucas.adventofcode2019.TestUtils.bigIntegerArray;
+import static com.jacoblucas.adventofcode2019.TestUtils.bigIntegerInput;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.RELATIVE_BASE_KEY;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,7 +34,7 @@ public class RelativeBaseOffsetInstructionTest {
                                 .mode(ParameterMode.POSITION)
                                 .build()))
                 .build();
-        DATA.put(MEMORY_KEY, bigIntegerArray(9,3,99,5));
+        DATA.put(MEMORY_KEY, bigIntegerInput(9,3,99,5));
         assertThat(rboInstruction.execute(DATA).intValue(), is(6));
         assertThat(DATA.get(RELATIVE_BASE_KEY, Integer.class), is(6));
     }
@@ -50,7 +50,7 @@ public class RelativeBaseOffsetInstructionTest {
                                 .mode(ParameterMode.IMMEDIATE)
                                 .build()))
                 .build();
-        DATA.put(MEMORY_KEY, bigIntegerArray(9,3,99,5));
+        DATA.put(MEMORY_KEY, bigIntegerInput(9,3,99,5));
         assertThat(rboInstruction.execute(DATA).intValue(), is(4));
         assertThat(DATA.get(RELATIVE_BASE_KEY, Integer.class), is(4));
     }

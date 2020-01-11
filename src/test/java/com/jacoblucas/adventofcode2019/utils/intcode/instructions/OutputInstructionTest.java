@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static com.jacoblucas.adventofcode2019.TestUtils.bigIntegerArray;
+import static com.jacoblucas.adventofcode2019.TestUtils.bigIntegerInput;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -26,7 +26,7 @@ public class OutputInstructionTest {
     @Test
     public void testExecute() {
         final IntcodeComputerData data = new IntcodeComputerData();
-        data.put(MEMORY_KEY, bigIntegerArray(3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 12, 1, 9));
+        data.put(MEMORY_KEY, bigIntegerInput(3, 12, 6, 12, 15, 1, 13, 14, 13, 4, 13, 99, -1, 12, 1, 9));
         assertThat(OUTPUT.execute(data).intValue(), is(12));
     }
 

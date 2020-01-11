@@ -3,8 +3,9 @@ package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 import com.google.common.base.Preconditions;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData;
 import com.jacoblucas.adventofcode2019.utils.intcode.Opcode;
-import io.vavr.collection.Array;
+import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
 import org.immutables.value.Value;
 
 import java.math.BigInteger;
@@ -16,7 +17,7 @@ import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.
 public abstract class JumpInstruction extends Instruction<BigInteger> {
     @Override
     public BigInteger execute(final IntcodeComputerData data) {
-        final Array<BigInteger> memory = data.get(MEMORY_KEY, Array.class);
+        final Map<BigInteger, BigInteger> memory = data.get(MEMORY_KEY, HashMap.class);
         final List<Parameter> parameters = getParameters();
         final Parameter p1 = parameters.get(0);
         final Parameter p2 = parameters.get(1);

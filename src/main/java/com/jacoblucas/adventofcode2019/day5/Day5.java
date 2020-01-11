@@ -1,20 +1,16 @@
 package com.jacoblucas.adventofcode2019.day5;
 
-import com.jacoblucas.adventofcode2019.utils.InputReader;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
-import io.vavr.collection.Array;
+import io.vavr.collection.Map;
 import io.vavr.collection.Queue;
-import io.vavr.collection.Stream;
 
 import java.math.BigInteger;
 
+import static com.jacoblucas.adventofcode2019.utils.InputReader.loadInput;
+
 public class Day5 {
     public static void main(String[] args) {
-        final Array<BigInteger> input = InputReader.read("day5-input.txt")
-                .map(str -> str.split(","))
-                .flatMap(Stream::of)
-                .map(BigInteger::new)
-                .toArray();
+        final Map<BigInteger, BigInteger> input = loadInput("day5-input.txt");
 
         IntcodeComputer computer = new IntcodeComputer();
         computer.feed(input, Queue.of(BigInteger.ONE));

@@ -5,8 +5,9 @@ import com.jacoblucas.adventofcode2019.utils.intcode.instructions.InputInstructi
 import com.jacoblucas.adventofcode2019.utils.intcode.instructions.Instruction;
 import com.jacoblucas.adventofcode2019.utils.intcode.instructions.InstructionFactory;
 import com.jacoblucas.adventofcode2019.utils.intcode.instructions.OutputInstruction;
-import io.vavr.collection.Array;
+import io.vavr.collection.HashMap;
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
 import io.vavr.collection.Queue;
 import io.vavr.collection.Stream;
 import io.vavr.control.Try;
@@ -31,17 +32,22 @@ public class IntcodeComputer {
     private IntcodeComputerData data = new IntcodeComputerData();
 
     public void feed(String arr) {
-        final Array<BigInteger> program = Stream.of(arr.split(","))
+        final List<BigInteger> ints = List.of(arr.split(","))
+                .flatMap(Stream::of)
                 .map(BigInteger::new)
-                .toArray();
+                .toList();
+        Map<BigInteger, BigInteger> program = HashMap.empty();
+        for (int i=0; i<ints.size(); i++) {
+            program = program.put(BigInteger.valueOf(i), ints.get(i));
+        }
         feed(program);
     }
 
-    public void feed(final Array<BigInteger> program) {
+    public void feed(final Map<BigInteger, BigInteger> program) {
         feed(program, Queue.empty());
     }
 
-    public void feed(Array<BigInteger> program, final Queue<BigInteger> input) {
+    public void feed(Map<BigInteger, BigInteger> program, final Queue<BigInteger> input) {
         this.output = List.empty();
         this.input = new LinkedBlockingQueue<>();
         this.input.addAll(input.toJavaList());
@@ -68,7 +74,7 @@ public class IntcodeComputer {
     }
 
     public BigInteger getOutput() {
-        return output.isEmpty() ? getMemory().get(0) : output.last();
+        return output.isEmpty() ? getMemory().get(BigInteger.ZERO).get() : output.last();
     }
 
     public IntcodeComputer execute() {
@@ -116,7 +122,7 @@ public class IntcodeComputer {
         if (instruction instanceof OutputInstruction) {
             output = output.append((BigInteger)result);
             publish((BigInteger)result);
-//            System.out.println(String.format("%s OUTPUT=%d", instruction, output));
+//            System.out.println(String.format("%s OUTPUT=%s", instruction, result.toString()));
         }
 
         final int instructionPointer = getInstructionPointer();
@@ -126,7 +132,6 @@ public class IntcodeComputer {
         }
 
 //        System.out.println(String.format("[pos=%d] After: %s", currentInstructionPointer, memory));
-
         return CONTINUE;
     }
 
@@ -134,8 +139,8 @@ public class IntcodeComputer {
         return data.get(INSTRUCTION_POINTER_KEY, Integer.class);
     }
 
-    Array<BigInteger> getMemory() {
-        return data.get(MEMORY_KEY, Array.class);
+    Map<BigInteger, BigInteger> getMemory() {
+        return data.get(MEMORY_KEY, HashMap.class);
     }
 
     private int getRelativeBase() {

@@ -1,6 +1,6 @@
 package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 
-import io.vavr.collection.Array;
+import io.vavr.collection.Map;
 import org.immutables.value.Value;
 
 import java.math.BigInteger;
@@ -20,10 +20,10 @@ public abstract class Parameter {
         return 0;
     }
 
-    public BigInteger resolve(final Array<BigInteger> memory) {
+    public BigInteger resolve(final Map<BigInteger, BigInteger> memory) {
         return Match(getMode()).of(
-                Case($(ParameterMode.POSITION), () -> memory.get(getValue().intValue())),
-                Case($(ParameterMode.RELATIVE), () -> memory.get(getRelativeBase() + getValue().intValue())),
+                Case($(ParameterMode.POSITION), () -> memory.get(getValue()).getOrElse(BigInteger.ZERO)),
+                Case($(ParameterMode.RELATIVE), () -> memory.get(getValue().add(BigInteger.valueOf(getRelativeBase()))).getOrElse(BigInteger.ZERO)),
                 Case($(), this::getValue));
     }
 }

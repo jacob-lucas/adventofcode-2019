@@ -2,7 +2,7 @@ package com.jacoblucas.adventofcode2019.day7;
 
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerOutputReceiver;
-import io.vavr.collection.Array;
+import io.vavr.collection.Map;
 import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 
@@ -14,7 +14,7 @@ public class Amplifier implements IntcodeComputerOutputReceiver {
     private Option<Amplifier> connection;
     private Thread thread;
 
-    public Amplifier(final Integer id, final Array<BigInteger> program) {
+    public Amplifier(final Integer id, final Map<BigInteger, BigInteger> program) {
         this.id = id;
         this.connection = Option.none();
         this.computer = new IntcodeComputer();

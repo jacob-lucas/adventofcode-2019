@@ -1,8 +1,12 @@
 package com.jacoblucas.adventofcode2019.utils;
 
+import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
 import io.vavr.collection.Stream;
 import io.vavr.control.Try;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -27,6 +31,19 @@ public class InputReader {
                     return Stream.empty();
                 })
         );
+    }
+
+    public static Map<BigInteger, BigInteger> loadInput(final String filename) {
+        final List<BigInteger> ints = InputReader.read(filename)
+                .map(str -> str.split(","))
+                .flatMap(Stream::of)
+                .map(BigInteger::new)
+                .toList();
+        Map<BigInteger, BigInteger> input = HashMap.empty();
+        for (int i=0; i<ints.size(); i++) {
+            input = input.put(BigInteger.valueOf(i), ints.get(i));
+        }
+        return input;
     }
 
     static Try<Stream<String>> readFile(final String path, final String filename) {

@@ -1,6 +1,7 @@
 package com.jacoblucas.adventofcode2019.day7;
 
 import io.vavr.collection.Array;
+import io.vavr.collection.Map;
 import io.vavr.collection.Stream;
 
 import java.math.BigInteger;
@@ -8,7 +9,7 @@ import java.math.BigInteger;
 public class Circuit {
     final Array<Amplifier> amplifiers;
 
-    public Circuit(final int n, final Array<BigInteger> program, final CircuitMode mode) {
+    public Circuit(final int n, final Map<BigInteger, BigInteger> program, final CircuitMode mode) {
         this.amplifiers = Stream.range(0, n).map(i -> new Amplifier(i, program)).toArray();
         for (int i=0; i<n-1; i++) {
             amplifiers.get(i).connect(amplifiers.get(i+1));

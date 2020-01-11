@@ -1,8 +1,8 @@
 package com.jacoblucas.adventofcode2019.utils.intcode.instructions;
 
 import com.jacoblucas.adventofcode2019.utils.intcode.Opcode;
-import io.vavr.collection.Array;
 import io.vavr.collection.List;
+import io.vavr.collection.Map;
 import io.vavr.collection.Stream;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -15,17 +15,17 @@ import static io.vavr.API.Match;
 import static io.vavr.Predicates.isIn;
 
 public class InstructionFactory {
-    public static Try<Instruction> at(final int address, final Array<BigInteger> program) {
+    public static Try<Instruction> at(final int address, final Map<BigInteger, BigInteger> program) {
         return at(address, program, Option.none());
     }
 
-    public static Try<Instruction> at(final int address, final Array<BigInteger> program, final Option<BigInteger> input) {
+    public static Try<Instruction> at(final int address, final Map<BigInteger, BigInteger> program, final Option<BigInteger> input) {
         return at(address, program, input, 0);
     }
 
-    public static Try<Instruction> at(final int address, final Array<BigInteger> program, final Option<BigInteger> input, final int relativeBase) {
+    public static Try<Instruction> at(final int address, final Map<BigInteger, BigInteger> program, final Option<BigInteger> input, final int relativeBase) {
         return Try.of(() -> {
-            final int instruction = program.get(address).intValue();
+            final int instruction = program.get(BigInteger.valueOf(address)).get().intValue();
             final Opcode opcode = Opcode.of(instruction % 100).get();
 
             final int numExpectedParameters = Match(opcode).of(
@@ -83,9 +83,9 @@ public class InstructionFactory {
             final int address,
             final int parameterNumber,
             final int relativeBase,
-            final Array<BigInteger> program
+            final Map<BigInteger, BigInteger> program
     ) {
-        final BigInteger value = program.get(address + parameterNumber);
+        final BigInteger value = program.get(BigInteger.valueOf(address + parameterNumber)).get();
         final ParameterMode mode = getMode(instruction, parameterNumber);
         return ImmutableParameter.builder()
                 .value(value)
@@ -97,11 +97,9 @@ public class InstructionFactory {
     static ParameterMode getMode(final int instruction, final int parameterNumber) {
         final char[] mode = String.format("%05d", instruction).toCharArray();
         final int value = Character.getNumericValue(Match(parameterNumber).of(
-                Case($(1), mode[2]),
-                Case($(2), mode[1]),
-//                Case($(3), mode[0]),
-                Case($(), '0')));
+                Case($(1), () -> mode[2]),
+                Case($(2), () -> mode[1]),
+                Case($(3), () -> mode[0])));
         return ParameterMode.of(value).get();
     }
-
 }

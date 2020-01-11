@@ -1,22 +1,17 @@
 package com.jacoblucas.adventofcode2019.day2;
 
-import com.jacoblucas.adventofcode2019.utils.InputReader;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
-import io.vavr.collection.Array;
-import io.vavr.collection.Stream;
+import io.vavr.collection.Map;
 
 import java.math.BigInteger;
 
+import static com.jacoblucas.adventofcode2019.utils.InputReader.loadInput;
+
 public class Day2 {
     public static void main(String[] args) {
-        Array<BigInteger> input = InputReader.read("day2-input.txt")
-                .map(str -> str.split(","))
-                .flatMap(Stream::of)
-                .map(BigInteger::new)
-                .toArray();
-
-        input = input.update(1, BigInteger.valueOf(12));
-        input = input.update(2, BigInteger.valueOf(2));
+        Map<BigInteger, BigInteger> input = loadInput("day2-input.txt");
+        input = input.put(BigInteger.valueOf(1), BigInteger.valueOf(12));
+        input = input.put(BigInteger.valueOf(2), BigInteger.valueOf(2));
 
         IntcodeComputer computer = new IntcodeComputer();
         computer.feed(input);
@@ -27,8 +22,8 @@ public class Day2 {
         boolean found = false;
         for (int noun = 0; noun < 100 && !found; noun++) {
             for (int verb = 0; verb < 100 && !found; verb++) {
-                input = input.update(1, BigInteger.valueOf(noun));
-                input = input.update(2, BigInteger.valueOf(verb));
+                input = input.put(BigInteger.valueOf(1), BigInteger.valueOf(noun));
+                input = input.put(BigInteger.valueOf(2), BigInteger.valueOf(verb));
                 computer.feed(input);
                 computer.execute();
                 final BigInteger output = computer.getOutput();

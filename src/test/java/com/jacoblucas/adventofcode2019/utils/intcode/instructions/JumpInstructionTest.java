@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import java.math.BigInteger;
 
-import static com.jacoblucas.adventofcode2019.TestUtils.bigIntegerArray;
+import static com.jacoblucas.adventofcode2019.TestUtils.bigIntegerInput;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.INSTRUCTION_POINTER_KEY;
 import static com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerData.MEMORY_KEY;
 import static org.hamcrest.CoreMatchers.is;
@@ -81,35 +81,35 @@ public class JumpInstructionTest {
 
     @Test
     public void testJumpIfTrueNonZero() {
-        DATA.put(MEMORY_KEY, bigIntegerArray(3, 3, 1105, 5, 9, 1101, 0, 0, 12, 4, 12, 99, 1));
+        DATA.put(MEMORY_KEY, bigIntegerInput(3, 3, 1105, 5, 9, 1101, 0, 0, 12, 4, 12, 99, 1));
         assertThat(JUMP_IF_TRUE_NON_ZERO.execute(DATA).intValue(), is(9));
         assertThat(DATA.get(INSTRUCTION_POINTER_KEY, Integer.class), is(9));
     }
 
     @Test
     public void testJumpIfTrueZero() {
-        DATA.put(MEMORY_KEY, bigIntegerArray(3,3,105,0,9,1101,0,0,12,4,12,99,1));
+        DATA.put(MEMORY_KEY, bigIntegerInput(3,3,105,0,9,1101,0,0,12,4,12,99,1));
         assertThat(JUMP_IF_TRUE_ZERO.execute(DATA).intValue(), is(-1));
         assertThat(DATA.get(INSTRUCTION_POINTER_KEY, Integer.class), is(1));
     }
 
     @Test
     public void testJumpIfFalseNonZero() {
-        DATA.put(MEMORY_KEY, bigIntegerArray(3, 3, 1106, 5, 9, 1101, 0, 0, 12, 4, 12, 99, 1));
+        DATA.put(MEMORY_KEY, bigIntegerInput(3, 3, 1106, 5, 9, 1101, 0, 0, 12, 4, 12, 99, 1));
         assertThat(JUMP_IF_FALSE_NON_ZERO.execute(DATA).intValue(), is(-1));
         assertThat(DATA.get(INSTRUCTION_POINTER_KEY, Integer.class), is(1));
     }
 
     @Test
     public void testJumpIfFalseZero() {
-        DATA.put(MEMORY_KEY, bigIntegerArray(3,3,1106,0,9,1101,0,0,12,4,12,99,1));
+        DATA.put(MEMORY_KEY, bigIntegerInput(3,3,1106,0,9,1101,0,0,12,4,12,99,1));
         assertThat(JUMP_IF_FALSE_ZERO.execute(DATA).intValue(), is(9));
         assertThat(DATA.get(INSTRUCTION_POINTER_KEY, Integer.class), is(9));
     }
 
     @Test
     public void testGetIncrement() {
-        DATA.put(MEMORY_KEY, bigIntegerArray(3, 3, 1105, 5, 9, 1101, 0, 0, 12, 4, 12, 99, 1));
+        DATA.put(MEMORY_KEY, bigIntegerInput(3, 3, 1105, 5, 9, 1101, 0, 0, 12, 4, 12, 99, 1));
         assertThat(JUMP_IF_TRUE_ZERO.getIncrement(), is(3));
         assertThat(JUMP_IF_FALSE_ZERO.getIncrement(), is(3));
     }
