@@ -2,6 +2,7 @@ package com.jacoblucas.adventofcode2019.day3;
 
 import com.jacoblucas.adventofcode2019.utils.Calculator;
 import com.jacoblucas.adventofcode2019.utils.InputReader;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
 import io.vavr.Tuple2;
 import io.vavr.Tuple4;
 import io.vavr.collection.Iterator;

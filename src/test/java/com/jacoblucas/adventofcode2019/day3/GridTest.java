@@ -1,5 +1,7 @@
 package com.jacoblucas.adventofcode2019.day3;
 
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
 import org.junit.Test;

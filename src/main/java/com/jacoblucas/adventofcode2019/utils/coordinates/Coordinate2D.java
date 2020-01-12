@@ -1,4 +1,4 @@
-package com.jacoblucas.adventofcode2019.day3;
+package com.jacoblucas.adventofcode2019.utils.coordinates;
 
 import org.immutables.value.Value;
 

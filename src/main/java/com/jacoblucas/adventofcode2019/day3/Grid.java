@@ -1,6 +1,8 @@
 package com.jacoblucas.adventofcode2019.day3;
 
 import com.jacoblucas.adventofcode2019.utils.Calculator;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.HashSet;

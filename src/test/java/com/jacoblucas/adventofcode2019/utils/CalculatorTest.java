@@ -1,7 +1,8 @@
 package com.jacoblucas.adventofcode2019.utils;
 
-import com.jacoblucas.adventofcode2019.day3.Coordinate;
-import com.jacoblucas.adventofcode2019.day3.ImmutableCoordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -24,6 +25,28 @@ public class CalculatorTest {
         assertThat(Calculator.manhattanDistance(d, c), is(6));
         assertThat(Calculator.manhattanDistance(d, d), is(0));
         assertThat(Calculator.manhattanDistance(e, f), is(16));
+    }
+
+    @Test
+    public void testGradient() {
+        final Coordinate2D a = ImmutableCoordinate2D.of(0, 1);
+        final Coordinate2D c = ImmutableCoordinate2D.of(1, 2);
+        final Coordinate2D d = ImmutableCoordinate2D.of(3, 2);
+        final Coordinate2D e = ImmutableCoordinate2D.of(4, 3);
+
+        assertThat(Calculator.gradient(a, c), is(1.0));
+        assertThat(String.format("%.3f", Calculator.gradient(a, d)), is("0.333"));
+        assertThat(String.format("%.3f", Calculator.gradient(a, e)), is("0.500"));
+    }
+
+    @Test
+    public void testAngleFromZero() {
+        final Coordinate2D a = ImmutableCoordinate2D.of(2, 2);
+        final Coordinate2D b = ImmutableCoordinate2D.of(1, 0);
+        final Coordinate2D c = ImmutableCoordinate2D.of(3, 4);
+
+        assertThat(String.format("%.3f", Calculator.angleFromZero(a, b)), is("-0.546"));
+        assertThat(String.format("%.3f", Calculator.angleFromZero(a, c)), is("0.546"));
     }
 
 }
