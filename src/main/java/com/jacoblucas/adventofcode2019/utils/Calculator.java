@@ -9,6 +9,10 @@ public final class Calculator {
         return Math.abs(p.x() - q.x()) + Math.abs(p.y() - q.y()) + Math.abs(p.z() - q.z());
     }
 
+    public static double distance(final Coordinate p, final Coordinate q) {
+        return Math.sqrt(Math.pow(q.x() - p.x(), 2) + Math.pow(q.y() - p.y(), 2));
+    }
+
     public static double gradient(final Coordinate2D p, final Coordinate2D q) {
         return ((double) q.y() - p.y()) / (q.x() - p.x());
     }

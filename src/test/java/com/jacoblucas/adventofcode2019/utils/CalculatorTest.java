@@ -28,6 +28,18 @@ public class CalculatorTest {
     }
 
     @Test
+    public void testDistance() {
+        double distance = Calculator.distance(ImmutableCoordinate2D.of(4, 3), ImmutableCoordinate2D.of(3, -2));
+        assertThat(String.format("%.3f", distance), is("5.099"));
+
+        distance = Calculator.distance(ImmutableCoordinate2D.of(-1, -1), ImmutableCoordinate2D.of(-3, -3));
+        assertThat(String.format("%.3f", distance), is("2.828"));
+
+        distance = Calculator.distance(ImmutableCoordinate2D.of(0, 0), ImmutableCoordinate2D.of(5, 5));
+        assertThat(String.format("%.3f", distance), is("7.071"));
+    }
+
+    @Test
     public void testGradient() {
         final Coordinate2D a = ImmutableCoordinate2D.of(0, 1);
         final Coordinate2D c = ImmutableCoordinate2D.of(1, 2);
@@ -37,6 +49,7 @@ public class CalculatorTest {
         assertThat(Calculator.gradient(a, c), is(1.0));
         assertThat(String.format("%.3f", Calculator.gradient(a, d)), is("0.333"));
         assertThat(String.format("%.3f", Calculator.gradient(a, e)), is("0.500"));
+
     }
 
     @Test
