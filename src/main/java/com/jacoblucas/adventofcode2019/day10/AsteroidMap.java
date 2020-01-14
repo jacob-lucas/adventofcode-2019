@@ -4,6 +4,8 @@ import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 
+import java.util.Objects;
+
 public class AsteroidMap {
     private static final char ASTEROID = '#';
 
@@ -28,5 +30,18 @@ public class AsteroidMap {
 
     public List<Asteroid> getAsteroids() {
         return asteroids;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AsteroidMap that = (AsteroidMap) o;
+        return asteroids.equals(that.asteroids);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(asteroids);
     }
 }
