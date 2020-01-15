@@ -14,4 +14,9 @@ public abstract class Coordinate2D implements Coordinate {
     public int z() {
         return 0;
     }
+
+    @Override
+    public String toString() {
+        return String.format("(%d,%d)", x(), y());
+    }
 }

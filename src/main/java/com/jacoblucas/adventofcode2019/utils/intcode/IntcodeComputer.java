@@ -103,7 +103,9 @@ public class IntcodeComputer {
 
     private int execute(Instruction instruction) {
         final int currentInstructionPointer = getInstructionPointer();
-//        System.out.println(String.format("[pos=%d] Before: %s", currentInstructionPointer, memory));
+//        System.out.println(String.format("[pos=%d] Before: %s", currentInstructionPointer, getMemory()));
+
+//        System.out.println(String.format("[%s] [pos=%d] Executing %s", Thread.currentThread().getName(), currentInstructionPointer, instruction));
 
         if (instruction.getOpcode() == Opcode.HALT) {
             return BREAK;
@@ -122,7 +124,7 @@ public class IntcodeComputer {
         if (instruction instanceof OutputInstruction) {
             output = output.append((BigInteger)result);
             publish((BigInteger)result);
-//            System.out.println(String.format("%s OUTPUT=%s", instruction, result.toString()));
+//            System.out.println(String.format("[%s] %s OUTPUT=%s", Thread.currentThread().getName(), instruction, result.toString()));
         }
 
         final int instructionPointer = getInstructionPointer();
@@ -131,7 +133,7 @@ public class IntcodeComputer {
             data.put(INSTRUCTION_POINTER_KEY, instructionPointer + instruction.getIncrement());
         }
 
-//        System.out.println(String.format("[pos=%d] After: %s", currentInstructionPointer, memory));
+//        System.out.println(String.format("[pos=%d] After: %s", currentInstructionPointer, getMemory()));
         return CONTINUE;
     }
 
