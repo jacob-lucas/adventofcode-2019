@@ -1,7 +1,7 @@
 package com.jacoblucas.adventofcode2019.day10;
 
 import com.jacoblucas.adventofcode2019.utils.Calculator;
-import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates2D;
 import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import org.immutables.value.Value;
@@ -11,7 +11,7 @@ public abstract class MonitoringStation {
     public abstract Asteroid getAsteroid();
 
     @Value.Derived
-    public Coordinate2D getLocation() {
+    public Coordinates2D getLocation() {
         return getAsteroid().getCoordinate();
     }
 
@@ -20,7 +20,7 @@ public abstract class MonitoringStation {
     }
 
     public Asteroid vaporize(final AsteroidMap map, final int n) {
-        final Coordinate2D location = getLocation();
+        final Coordinates2D location = getLocation();
         final Asteroid asteroid = getAsteroid();
         Map<Double, List<Asteroid>> asteroidsByDegree = map.getAsteroids()
                 .filter(a -> !a.equals(asteroid))

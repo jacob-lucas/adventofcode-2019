@@ -1,7 +1,7 @@
 package com.jacoblucas.adventofcode2019.day11;
 
-import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
-import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinates2D;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputerOutputReceiver;
 import io.vavr.collection.HashMap;
@@ -32,7 +32,7 @@ public class EmergencyHullPaintingRobot implements IntcodeComputerOutputReceiver
 
     RobotState state;
 
-    Coordinate2D coordinate;
+    Coordinates2D coordinate;
 
     Map<String, Colour> hull;
 
@@ -41,7 +41,7 @@ public class EmergencyHullPaintingRobot implements IntcodeComputerOutputReceiver
         this.computer = computer;
         this.direction = Direction.UP;
 
-        this.coordinate = ImmutableCoordinate2D.of(0, 0);
+        this.coordinate = ImmutableCoordinates2D.of(0, 0);
         this.hull = HashMap.of(coordinate.toString(), Colour.BLACK);
 
         computer.subscribe(this);
@@ -100,13 +100,13 @@ public class EmergencyHullPaintingRobot implements IntcodeComputerOutputReceiver
         // move forward n panels
         String current = coordinate.toString();
         if (direction == Direction.LEFT) {
-            coordinate = ImmutableCoordinate2D.copyOf(this.coordinate).withX(this.coordinate.x() - n);
+            coordinate = ImmutableCoordinates2D.copyOf(this.coordinate).withX(this.coordinate.x() - n);
         } else if (direction == Direction.RIGHT) {
-            coordinate = ImmutableCoordinate2D.copyOf(coordinate).withX(coordinate.x() + n);
+            coordinate = ImmutableCoordinates2D.copyOf(coordinate).withX(coordinate.x() + n);
         } else if (direction == Direction.UP) {
-            coordinate = ImmutableCoordinate2D.copyOf(coordinate).withY(coordinate.y() + n);
+            coordinate = ImmutableCoordinates2D.copyOf(coordinate).withY(coordinate.y() + n);
         } else {
-            coordinate = ImmutableCoordinate2D.copyOf(coordinate).withY(coordinate.y() - n);
+            coordinate = ImmutableCoordinates2D.copyOf(coordinate).withY(coordinate.y() - n);
         }
 
 //        System.out.println(String.format("[MOVE] %s -> %s", current, coordinate.toString()));

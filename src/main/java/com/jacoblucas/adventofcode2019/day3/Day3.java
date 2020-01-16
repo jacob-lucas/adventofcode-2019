@@ -2,7 +2,7 @@ package com.jacoblucas.adventofcode2019.day3;
 
 import com.jacoblucas.adventofcode2019.utils.Calculator;
 import com.jacoblucas.adventofcode2019.utils.InputReader;
-import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates2D;
 import io.vavr.Tuple2;
 import io.vavr.Tuple4;
 import io.vavr.collection.Iterator;
@@ -22,7 +22,7 @@ public class Day3 {
 
         final List<String> wire1 = input.next();
         final List<String> wire2 = input.next();
-        final Seq<Tuple2<Coordinate2D, GridEntry>> intersections = listIntersections(wire1, wire2);
+        final Seq<Tuple2<Coordinates2D, GridEntry>> intersections = listIntersections(wire1, wire2);
 
         intersections.forEach(i -> {
             int manhattanDistance = Calculator.manhattanDistance(CENTRAL_PORT, i._1);
@@ -40,11 +40,11 @@ public class Day3 {
                 .forEach(t -> System.out.println(String.format("Steps to %s - wire1[%d] wire2[%d] total[%d]", t._1, t._2, t._3, t._4)));
     }
 
-    private static Seq<Tuple2<Coordinate2D, GridEntry>> listIntersections(final List<String> wireOneTrace, final List<String> wireTwoTrace) {
+    private static Seq<Tuple2<Coordinates2D, GridEntry>> listIntersections(final List<String> wireOneTrace, final List<String> wireTwoTrace) {
         GRID.trace("a", CENTRAL_PORT, wireOneTrace);
         GRID.trace("b", CENTRAL_PORT, wireTwoTrace);
 
-        final Seq<Tuple2<Coordinate2D, GridEntry>> intersections = GRID.getWhere(
+        final Seq<Tuple2<Coordinates2D, GridEntry>> intersections = GRID.getWhere(
                 gridEntry -> gridEntry.intersections() > 0,
                 Comparator.comparingInt(t -> Calculator.manhattanDistance(CENTRAL_PORT, t._1)));
 

@@ -1,18 +1,18 @@
 package com.jacoblucas.adventofcode2019.day10;
 
 import com.jacoblucas.adventofcode2019.utils.Calculator;
-import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates2D;
 import io.vavr.Tuple2;
 import org.immutables.value.Value;
 
 @Value.Immutable
 public abstract class Asteroid {
     @Value.Parameter
-    public abstract Coordinate2D getCoordinate();
+    public abstract Coordinates2D getCoordinate();
 
     @Override
     public String toString() {
-        final Coordinate2D coordinate = getCoordinate();
+        final Coordinates2D coordinate = getCoordinate();
         return String.format("(%d,%d)", coordinate.x(), coordinate.y());
     }
 

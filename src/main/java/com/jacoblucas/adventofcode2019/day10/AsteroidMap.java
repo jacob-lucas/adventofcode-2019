@@ -1,6 +1,6 @@
 package com.jacoblucas.adventofcode2019.day10;
 
-import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinates2D;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 
@@ -17,7 +17,7 @@ public class AsteroidMap {
             final String row = rawInput.get(y);
             for (int x=0; x<row.length(); x++) {
                 if (row.charAt(x) == ASTEROID) {
-                    asteroids = asteroids.append(ImmutableAsteroid.of(ImmutableCoordinate2D.of(x, y)));
+                    asteroids = asteroids.append(ImmutableAsteroid.of(ImmutableCoordinates2D.of(x, y)));
                 }
             }
         }

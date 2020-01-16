@@ -1,7 +1,7 @@
 package com.jacoblucas.adventofcode2019.day3;
 
-import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinate2D;
-import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinates2D;
 import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
 import org.junit.Test;
@@ -69,8 +69,8 @@ public class GridTest {
         assertThat(grid.size(), is(1));
 
         final String id = "1";
-        final Coordinate2D p = ImmutableCoordinate2D.of(5, 0);
-        final Coordinate2D q = ImmutableCoordinate2D.of(1, 0);
+        final Coordinates2D p = ImmutableCoordinates2D.of(5, 0);
+        final Coordinates2D q = ImmutableCoordinates2D.of(1, 0);
         grid.fillX(p, q, id);
 
         assertThat(grid.get(1, 0).getIds(), containsInAnyOrder(id));
@@ -86,8 +86,8 @@ public class GridTest {
         assertThat(grid.size(), is(1));
 
         final String id = "1";
-        final Coordinate2D p = ImmutableCoordinate2D.of(5, 0);
-        final Coordinate2D q = ImmutableCoordinate2D.of(-3, 0);
+        final Coordinates2D p = ImmutableCoordinates2D.of(5, 0);
+        final Coordinates2D q = ImmutableCoordinates2D.of(-3, 0);
         grid.fillX(p, q, id);
 
         assertThat(grid.get(-3, 0).getIds(), containsInAnyOrder(id));
@@ -107,8 +107,8 @@ public class GridTest {
         assertThat(grid.size(), is(1));
 
         final String id = "2";
-        final Coordinate2D p = ImmutableCoordinate2D.of(1, 5);
-        final Coordinate2D q = ImmutableCoordinate2D.of(1, 1);
+        final Coordinates2D p = ImmutableCoordinates2D.of(1, 5);
+        final Coordinates2D q = ImmutableCoordinates2D.of(1, 1);
         grid.fillY(p, q, id);
 
         assertThat(grid.get(1, 1).getIds(), containsInAnyOrder(id));
@@ -124,8 +124,8 @@ public class GridTest {
         assertThat(grid.size(), is(1));
 
         final String id = "2";
-        final Coordinate2D p = ImmutableCoordinate2D.of(0, -1);
-        final Coordinate2D q = ImmutableCoordinate2D.of(0, 2);
+        final Coordinates2D p = ImmutableCoordinates2D.of(0, -1);
+        final Coordinates2D q = ImmutableCoordinates2D.of(0, 2);
         grid.fillY(p, q, id);
 
         assertThat(grid.get(0, -1).getIds(), containsInAnyOrder(id));
@@ -150,8 +150,8 @@ public class GridTest {
 
     @Test
     public void testSteps() {
-        final ImmutableCoordinate2D i1 = ImmutableCoordinate2D.of(3, 3);
-        final ImmutableCoordinate2D i2 = ImmutableCoordinate2D.of(6, 5);
+        final ImmutableCoordinates2D i1 = ImmutableCoordinates2D.of(3, 3);
+        final ImmutableCoordinates2D i2 = ImmutableCoordinates2D.of(6, 5);
         final Grid grid = new Grid();
 
         final List<String> path1 = List.of("R8", "U5", "L5", "D3");

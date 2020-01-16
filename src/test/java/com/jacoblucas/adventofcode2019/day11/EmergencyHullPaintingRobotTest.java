@@ -1,6 +1,6 @@
 package com.jacoblucas.adventofcode2019.day11;
 
-import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinate2D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinates2D;
 import com.jacoblucas.adventofcode2019.utils.intcode.IntcodeComputer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,19 +96,19 @@ public class EmergencyHullPaintingRobotTest {
         final EmergencyHullPaintingRobot robot = new EmergencyHullPaintingRobot("1101,1,1,5,99", mockComputer);
         robot.state = TURNING;
         robot.receive(BigInteger.ZERO);
-        assertThat(robot.coordinate, is(ImmutableCoordinate2D.of(-1, 0)));
+        assertThat(robot.coordinate, is(ImmutableCoordinates2D.of(-1, 0)));
 
         robot.state = TURNING;
         robot.receive(BigInteger.ZERO);
-        assertThat(robot.coordinate, is(ImmutableCoordinate2D.of(-1, -1)));
+        assertThat(robot.coordinate, is(ImmutableCoordinates2D.of(-1, -1)));
 
         robot.state = TURNING;
         robot.receive(BigInteger.ZERO);
-        assertThat(robot.coordinate, is(ImmutableCoordinate2D.of(0, -1)));
+        assertThat(robot.coordinate, is(ImmutableCoordinates2D.of(0, -1)));
 
         robot.state = TURNING;
         robot.receive(BigInteger.ZERO);
-        assertThat(robot.coordinate, is(ImmutableCoordinate2D.of(0, 0)));
+        assertThat(robot.coordinate, is(ImmutableCoordinates2D.of(0, 0)));
     }
 
     @Test

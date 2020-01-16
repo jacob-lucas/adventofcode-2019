@@ -3,7 +3,7 @@ package com.jacoblucas.adventofcode2019.utils.coordinates;
 import org.immutables.value.Value;
 
 @Value.Immutable
-public abstract class Coordinate2D implements Coordinate {
+public abstract class Coordinates2D implements Coordinates {
     @Value.Parameter
     public abstract int x();
 
