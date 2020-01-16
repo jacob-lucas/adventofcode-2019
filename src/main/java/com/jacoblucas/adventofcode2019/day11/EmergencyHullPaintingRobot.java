@@ -53,8 +53,8 @@ public class EmergencyHullPaintingRobot implements IntcodeComputerOutputReceiver
         return "EHPR";
     }
 
-    public Map<String, Colour> run() {
-        signal(Colour.BLACK);
+    public Map<String, Colour> run(final Colour colour) {
+        signal(colour);
         computer.execute();
         return hull;
     }

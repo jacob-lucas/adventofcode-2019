@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.math.BigInteger;
 
+import static com.jacoblucas.adventofcode2019.day11.Colour.BLACK;
 import static com.jacoblucas.adventofcode2019.day11.Colour.WHITE;
 import static com.jacoblucas.adventofcode2019.day11.Direction.DOWN;
 import static com.jacoblucas.adventofcode2019.day11.Direction.LEFT;
@@ -30,7 +31,7 @@ public class EmergencyHullPaintingRobotTest {
 
     @Test
     public void runExecutesComputer() {
-        new EmergencyHullPaintingRobot("1101,1,1,5,99", mockComputer).run();
+        new EmergencyHullPaintingRobot("1101,1,1,5,99", mockComputer).run(BLACK);
         verify(mockComputer, times(1)).execute();
         verify(mockComputer, times(1)).receiveInput(BigInteger.ZERO);
     }
