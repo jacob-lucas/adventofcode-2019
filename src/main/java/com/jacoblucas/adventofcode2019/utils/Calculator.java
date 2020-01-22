@@ -3,6 +3,8 @@ package com.jacoblucas.adventofcode2019.utils;
 import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates;
 import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates2D;
 
+import java.math.BigInteger;
+
 
 public final class Calculator {
     public static int manhattanDistance(final Coordinates p, final Coordinates q) {
@@ -48,5 +50,9 @@ public final class Calculator {
         } else {
             return (quadrant + 1) * 90 - degrees;
         }
+    }
+
+    public static BigInteger lcd(final BigInteger i, final BigInteger j) {
+        return i.multiply(j).divide(i.gcd(j));
     }
 }

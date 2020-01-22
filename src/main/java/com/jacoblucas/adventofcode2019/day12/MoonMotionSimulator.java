@@ -1,36 +1,69 @@
 package com.jacoblucas.adventofcode2019.day12;
 
-import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates;
+import com.jacoblucas.adventofcode2019.utils.Calculator;
+import com.jacoblucas.adventofcode2019.utils.coordinates.VectorCoordinate;
+import io.vavr.Function1;
+import io.vavr.Tuple3;
 import io.vavr.collection.List;
+import io.vavr.collection.Stream;
+
+import java.math.BigInteger;
 
 class MoonMotionSimulator {
 
-    static void applyGravity(final Moon m1, final Coordinates otherMoonPosition) {
-        final Coordinates m1Pos = m1.getPosition();
-        final Coordinates m1Vel = m1.getVelocity();
-
-        m1.setVelocity(
-                m1Vel.x() + Integer.compare(otherMoonPosition.x(), m1Pos.x()),
-                m1Vel.y() + Integer.compare(otherMoonPosition.y(), m1Pos.y()),
-                m1Vel.z() + Integer.compare(otherMoonPosition.z(), m1Pos.z()));
+    static void simulate(final int steps, final Planet planet) {
+        Stream.range(0, steps).forEach(i -> {
+            step(planet.getMoons(), Tuple3::_1);
+            step(planet.getMoons(), Tuple3::_2);
+            step(planet.getMoons(), Tuple3::_3);
+        });
     }
 
-    static void applyVelocity(final Moon moon) {
-        final Coordinates position = moon.getPosition();
-        final Coordinates velocity = moon.getVelocity();
-        moon.setPosition(
-                position.x() + velocity.x(),
-                position.y() + velocity.y(),
-                position.z() + velocity.z());
+    static BigInteger simulateLoop(final Planet planet) {
+        final int s1 = detectLoop(planet.getMoons(), Tuple3::_1);
+        final int s2 = detectLoop(planet.getMoons(), Tuple3::_2);
+        final int s3 = detectLoop(planet.getMoons(), Tuple3::_3);
+
+        return Calculator.lcd(Calculator.lcd(BigInteger.valueOf(s1), BigInteger.valueOf(s2)), BigInteger.valueOf(s3));
     }
 
-    static void step(final List<Moon> moons) {
-        for (final Moon m1 : moons) {
-            for (final Moon m2 : moons.filter(m -> !m.equals(m1))) {
-                applyGravity(m1, m2.getPosition());
+    private static int detectLoop(
+            final List<Moon> moons,
+            final Function1<Tuple3<VectorCoordinate, VectorCoordinate, VectorCoordinate>, VectorCoordinate> axisFunc
+    ) {
+        final List<VectorCoordinate> origin = moons
+                .map(Moon::getLocation)
+                .map(axisFunc)
+                .map(vc -> new VectorCoordinate(vc.getPosition(), vc.getVelocity()));
+
+        int steps = 0;
+        while (true) {
+            step(moons, axisFunc);
+            steps++;
+            if (moons.map(Moon::getLocation).map(axisFunc).equals(origin)) {
+                return steps;
             }
         }
+    }
 
-        moons.forEach(MoonMotionSimulator::applyVelocity);
+    private static void step(
+            final List<Moon> moons,
+            final Function1<Tuple3<VectorCoordinate, VectorCoordinate, VectorCoordinate>, VectorCoordinate> axisFunc
+    ) {
+        // apply gravity on the axis
+        moons.forEach(moon -> {
+            final List<Moon> others = moons.filter(m -> !m.equals(moon));
+            others.forEach(other -> {
+                VectorCoordinate axis = axisFunc.apply(moon.getLocation());
+                VectorCoordinate otherAxis = axisFunc.apply(other.getLocation());
+                axis.setVelocity(axis.getVelocity() + Integer.compare(otherAxis.getPosition(), axis.getPosition()));
+            });
+        });
+
+        // apply velocity on the axis
+        moons.forEach(moon -> {
+            VectorCoordinate moonAxis = axisFunc.apply(moon.getLocation());
+            moonAxis.setPosition(moonAxis.getPosition() + moonAxis.getVelocity());
+        });
     }
 }

@@ -1,7 +1,7 @@
 package com.jacoblucas.adventofcode2019.day12;
 
-import com.jacoblucas.adventofcode2019.utils.coordinates.Coordinates;
-import com.jacoblucas.adventofcode2019.utils.coordinates.ImmutableCoordinates3D;
+import com.jacoblucas.adventofcode2019.utils.coordinates.VectorCoordinate;
+import io.vavr.Tuple3;
 import io.vavr.collection.Array;
 import io.vavr.control.Try;
 
@@ -9,8 +9,7 @@ import java.util.Objects;
 
 public class Moon {
 
-    private Coordinates position;
-    private Coordinates velocity;
+    private Tuple3<VectorCoordinate, VectorCoordinate, VectorCoordinate> location;
 
     public static Try<Moon> parse(final String raw) {
         return Try.of(() -> {
@@ -20,37 +19,30 @@ public class Moon {
                     .map(String::trim)
                     .map(Integer::valueOf);
 
-            return new Moon(parts.get(0), parts.get(1), parts.get(2));
+            return new Moon(parts.get(0), parts.get(1), parts.get(2), 0, 0, 0);
         });
     }
 
-    public Moon(final int x, final int y, final int z) {
-        setPosition(x, y, z);
-        setVelocity(0, 0, 0);
+    public Moon(
+            final int x, final int y, final int z,
+            final int i, final int j, final int k
+    ) {
+        this.location = new Tuple3<>(
+                new VectorCoordinate(x, i),
+                new VectorCoordinate(y, j),
+                new VectorCoordinate(z, k));
     }
 
-    public Coordinates getPosition() {
-        return position;
-    }
-
-    public void setPosition(final int x, final int y, final int z) {
-        this.position = ImmutableCoordinates3D.of(x, y, z);
-    }
-
-    public Coordinates getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(final int x, final int y, final int z) {
-        this.velocity = ImmutableCoordinates3D.of(x, y, z);
+    public Tuple3<VectorCoordinate, VectorCoordinate, VectorCoordinate> getLocation() {
+        return location;
     }
 
     public int getPotentialEnergy() {
-        return Math.abs(position.x()) + Math.abs(position.y()) + Math.abs(position.z());
+        return Math.abs(location._1.getPosition()) + Math.abs(location._2.getPosition()) + Math.abs(location._3.getPosition());
     }
 
     public int getKineticEnergy() {
-        return Math.abs(velocity.x()) + Math.abs(velocity.y()) + Math.abs(velocity.z());
+        return Math.abs(location._1.getVelocity()) + Math.abs(location._2.getVelocity()) + Math.abs(location._3.getVelocity());
     }
 
     public int getTotalEnergy() {
@@ -66,16 +58,18 @@ public class Moon {
             return false;
         }
         final Moon moon = (Moon) o;
-        return position.equals(moon.position) && velocity.equals(moon.velocity);
+        return location.equals(moon.location);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(position, velocity);
+        return Objects.hash(location);
     }
 
     @Override
     public String toString() {
-        return String.format("pos=%s, vel=%s", position, velocity);
+        return String.format("pos=(%d,%d,%d), vel=(%d,%d,%d)",
+                location._1.getPosition(), location._2.getPosition(), location._3.getPosition(),
+                location._1.getVelocity(), location._2.getVelocity(), location._3.getVelocity());
     }
 }
