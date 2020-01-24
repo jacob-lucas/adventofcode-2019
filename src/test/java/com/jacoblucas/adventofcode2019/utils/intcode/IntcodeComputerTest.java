@@ -155,6 +155,15 @@ public class IntcodeComputerTest {
     }
 
     @Test
+    public void testBlocksDoubleSubscription() {
+        final TestReceiver receiver = new TestReceiver();
+        computer.subscribe(receiver);
+        computer.subscribe(receiver);
+
+        assertThat(computer.getReceivers().size(), is(1));
+    }
+
+    @Test
     public void testOutputSubscription() {
         final Map<BigInteger, BigInteger> memory = bigIntegerInput(
                 3, 21, 1008, 21, 8, 20, 1005, 20, 22, 107, 8, 21, 20, 1006, 20, 31,

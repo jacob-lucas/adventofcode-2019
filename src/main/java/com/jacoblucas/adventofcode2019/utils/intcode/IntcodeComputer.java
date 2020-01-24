@@ -58,8 +58,10 @@ public class IntcodeComputer {
     }
 
     public void subscribe(final IntcodeComputerOutputReceiver receiver) {
-        receivers = receivers.append(receiver);
-//        System.out.println(String.format("[%s] Added subscriber [%s]", Thread.currentThread().getName(), receiver.id()));
+        if (receivers.find(r -> r.id().equals(receiver.id())).isEmpty()) {
+            receivers = receivers.append(receiver);
+//            System.out.println(String.format("[%s] Added subscriber [%s]", Thread.currentThread().getName(), receiver.id()));
+        }
     }
 
     private void publish(final BigInteger output) {
@@ -97,7 +99,7 @@ public class IntcodeComputer {
                 }
             }
         }
-//        System.out.println(String.format("[%s] end", Thread.currentThread().getName()));
+//        System.out.println(String.format("[%s] pos=%d end", Thread.currentThread().getName(), getInstructionPointer()));
         return this;
     }
 
@@ -147,5 +149,9 @@ public class IntcodeComputer {
 
     private int getRelativeBase() {
         return data.get(RELATIVE_BASE_KEY, Integer.class);
+    }
+
+    List<IntcodeComputerOutputReceiver> getReceivers() {
+        return receivers;
     }
 }
