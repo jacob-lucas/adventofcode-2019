@@ -1,4 +1,4 @@
-package com.jacoblucas.adventofcode2019.day13;
+package com.jacoblucas.adventofcode2019.utils.arcadecabinet.blocks;
 
 import org.immutables.value.Value;
 
