@@ -65,7 +65,10 @@ public class Grid implements IntcodeComputerOutputReceiver {
             for (int x=minX; x<=maxX; x++) {
                 int finalX = x;
                 int finalY = y;
-                sb.append(tiles.find(t -> t.x() == finalX && t.y() == finalY).get().id());
+                Option<Tile> tile = tiles.find(t -> t.x() == finalX && t.y() == finalY);
+                if (tile.isDefined()) {
+                    sb.append(tile.get().id());
+                }
             }
             grid = grid.append(sb.toString());
         }
