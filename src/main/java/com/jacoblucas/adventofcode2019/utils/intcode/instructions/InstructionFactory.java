@@ -38,7 +38,7 @@ public class InstructionFactory {
                     .map(n -> getParameter(instruction, address, n, relativeBase, program))
                     .toList();
 
-            return Match(opcode).of(
+            return (Instruction) Match(opcode).of(
                     Case($(isIn(Opcode.ADD, Opcode.MULTIPLY, Opcode.LESS_THAN, Opcode.EQUALS)), () -> ImmutableMemoryUpdateInstruction.builder()
                             .address(address)
                             .opcode(opcode)
